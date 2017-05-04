@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+    private FloatingActionButton fab;
     private long keyBackTime;
 
     @Override
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //FloatingActionButton浮动按钮
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else{
             if (SystemClock.elapsedRealtime() - keyBackTime > 1500){
                 keyBackTime = SystemClock.elapsedRealtime();
                 Toast.makeText(this, "老婆再按一次你就要离开我啦！", Toast.LENGTH_SHORT).show();
