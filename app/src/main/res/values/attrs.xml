@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <attr format="integer" name="flakeCount"/>
+    <attr format="integer" name="minSize"/>
+    <attr format="integer" name="maxSize"/>
+    <attr format="reference|integer" name="flakeSrc"/>
+    <attr format="integer" name="speedX"/>
+    <attr format="integer" name="speedY"/>
+
+    <declare-styleable name="Snow">
+        <attr name="flakeCount"/>
+        <attr name="minSize"/>
+        <attr name="maxSize"/>
+        <attr name="flakeSrc"/>
+        <attr name="speedX"/>
+        <attr name="speedY"/>
+    </declare-styleable>
+
+</resources>
