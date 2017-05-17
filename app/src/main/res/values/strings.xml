@@ -4,8 +4,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设　　置</string>
+    <string name="action_update">检查更新</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header_title">BlueStart2 for 6.21</string>
+    <string name="nav_header_content">仅以此献给我最亲爱的老婆。</string>
+
 </resources>

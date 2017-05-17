@@ -4,17 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <div.Snow
+    <!--自定义控件Snow-->
+    <div.Animation
+        android:id="@+id/animation"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         app:flakeSrc="@mipmap/snow_flake"
-        app:speedY="10"
-        app:speedX="5"
-        app:maxSize="70"
-        app:minSize="50"
-        app:flakeCount="30"/>
+        app:speedY="5"
+        app:speedX="1"
+        app:maxSize="75"
+        app:minSize="45"
+        app:flakeCount="25"/>
 
     <include layout="@layout/drawer_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 </RelativeLayout>

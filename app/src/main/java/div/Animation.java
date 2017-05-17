@@ -16,29 +16,30 @@ import android.view.SurfaceView;
 import android.view.View;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.Random;
+import util.Date;
 
-public class Snow extends SurfaceView implements SurfaceHolder.Callback {
+public class Animation extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
-    private SnowFlake[]   mFlakes;
+    private Flake[]   mFlakes;
     private int           mViewWidth  = 200;
     private int           mViewHeight = 100;
     private int           mFlakeCount = 20;
     private int           mMinSize    = 50;
     private int           mMaxSize    = 70;
-    private int           mSpeedX     = 10;
-    private int           mSpeedY     = 20;
+    private int           mSpeedX     = 1;
+    private int           mSpeedY     = 10;
     private Bitmap        mSnowBitmap = null;
     private boolean       mStart      = false;
 
-    public Snow(Context context) {
+    public Animation(Context context) {
         this(context, null);
     }
 
-    public Snow(Context context, AttributeSet attrs) {
+    public Animation(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public Snow(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Animation(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initHolder();
         setZOrderOnTop(true);
@@ -49,7 +50,7 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
             int attr = array.getIndex(i);
             switch (attr) {
             case R.styleable.Snow_flakeCount:
-                mFlakeCount = array.getInteger(attr, 0);
+                mFlakeCount = array.getInteger(attr, 20);
                 break;
             case R.styleable.Snow_minSize:
                 mMinSize = array.getInteger(attr, 50);
@@ -58,11 +59,11 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
                 mMaxSize = array.getInteger(attr, 70);
                 break;
             case R.styleable.Snow_flakeSrc:
-                Integer srcId = array.getResourceId(attr, R.mipmap.snow_flake);
-                mSnowBitmap   = BitmapFactory.decodeResource(getResources(), srcId);
+//                Integer srcId = array.getResourceId(attr, R.mipmap.snow_flake);
+                mSnowBitmap   = BitmapFactory.decodeResource(getResources(), getResId());
                 break;
             case R.styleable.Snow_speedX:
-                mSpeedX = array.getInteger(attr, 10);
+                mSpeedX = array.getInteger(attr, 1);
                 break;
             case R.styleable.Snow_speedY:
                 mSpeedY = array.getInteger(attr, 10);
@@ -83,21 +84,21 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
     }
 
-    private void initSnowFlakes() {
-        mFlakes = new SnowFlake[mFlakeCount];
-        boolean isRightDir = new Random().nextBoolean();
+    private void initFlakes() {
+        mFlakes = new Flake[mFlakeCount];
         for (int i = 0; i < mFlakes.length; i++) {
-            mFlakes[i] = new SnowFlake();
+            boolean isRightDir = new Random().nextBoolean();
+            mFlakes[i] = new Flake();
             mFlakes[i].setWidth(new Random().nextInt(mMaxSize-mMinSize) + mMinSize);
             mFlakes[i].setHeight(mFlakes[i].getWidth());
             mFlakes[i].setX(new Random().nextInt(mViewWidth));
             mFlakes[i].setY(-(new Random().nextInt(mViewHeight)));
             mFlakes[i].setSpeedY(new Random().nextInt(4) + mSpeedY);
             if (isRightDir) {
-                mFlakes[i].setSpeedX(new Random().nextInt(4) + mSpeedX);
+                mFlakes[i].setSpeedX(new Random().nextInt(2) + mSpeedX);
             }
             else {
-                mFlakes[i].setSpeedX(-(new Random().nextInt(4) + mSpeedX));
+                mFlakes[i].setSpeedX(-(new Random().nextInt(2) + mSpeedX));
             }
         }
     }
@@ -105,16 +106,16 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
     private void updatePara() {
         int x;
         int y;
-        for (SnowFlake flake : mFlakes) {
+        for (Flake flake : mFlakes) {
             if (flake == null) {
                 break;
             }
             x = flake.getX() + flake.getSpeedX();
             y = flake.getY() + flake.getSpeedY();
-            if ((x > mViewWidth + 20 || x < 0)
-                    || (y > mViewHeight + 20)) {
+            if ((x > mViewWidth + flake.getWidth() || x < 0 - flake.getWidth())
+                    || (y > mViewHeight + flake.getHeight())) {
                 x = new Random().nextInt(mViewWidth);
-                y = 0;
+                y = -flake.getHeight();
             }
             flake.setX(x);
             flake.setY(y);
@@ -130,14 +131,14 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        drawSnow(canvas);
+        drawFlag(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
 
-    private void drawSnow(Canvas canvas) {
+    private void drawFlag(Canvas canvas) {
         Rect  rect  = new Rect();
         Paint paint = new Paint();
-        for (SnowFlake flake : mFlakes) {
+        for (Flake flake : mFlakes) {
             rect.left   = flake.getX();
             rect.top    = flake.getY();
             rect.right  = rect.left + flake.getWidth();
@@ -154,7 +155,7 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        initSnowFlakes();
+        initFlakes();
         start();
     }
 
@@ -196,7 +197,7 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
                             updatePara();
                             drawView();
                         }
-                        Thread.sleep(35);
+                        Thread.sleep(30);
                     }
                     catch (Exception ex) {
                         ex.printStackTrace();
@@ -205,4 +206,26 @@ public class Snow extends SurfaceView implements SurfaceHolder.Callback {
             }
         }.start();
     }
+
+    private int getResId(){
+
+        int monthIndex = Date.getNowMonth() / 3;
+        int resId;
+        switch (monthIndex){
+            case 0:
+                resId = R.mipmap.flower_flake;
+                break;
+            case 1:
+                resId = R.mipmap.grass_flake;
+                break;
+            case 2:
+                resId = R.mipmap.leaf_flake;
+                break;
+            default:
+                resId = R.mipmap.snow_flake;
+                break;
+        }
+        return resId;
+    }
+
 }

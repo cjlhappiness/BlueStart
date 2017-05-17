@@ -1,6 +1,6 @@
 package div;
 
-public class SnowFlake {
+public class Flake {
     private int mWidth;
     private int mHeight;
     private int mX;
@@ -21,7 +21,7 @@ public class SnowFlake {
     }
 
     public void setSpeedX(int speedX) {
-        this.mSpeedX = mSpeedX;
+        this.mSpeedX = speedX;
     }
 
     public int getSpeedY() {

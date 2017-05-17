@@ -22,31 +22,39 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.xicp.cjlhappiness.bluestart.R;
 
-public class CircleImageView extends ImageView {
+public class CircleImageView extends ImageView{
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
+
     private static final int COLORDRAWABLE_DIMENSION = 2;
     private static final int DEFAULT_BORDER_WIDTH = 0;
     private static final int DEFAULT_BORDER_COLOR = Color.BLACK;
     private static final int DEFAULT_FILL_COLOR = Color.TRANSPARENT;
     private static final boolean DEFAULT_BORDER_OVERLAY = false;
+
     private final RectF mDrawableRect = new RectF();
     private final RectF mBorderRect = new RectF();
+
     private final Matrix mShaderMatrix = new Matrix();
     private final Paint mBitmapPaint = new Paint();
     private final Paint mBorderPaint = new Paint();
     private final Paint mFillPaint = new Paint();
+
     private int mBorderColor = DEFAULT_BORDER_COLOR;
     private int mBorderWidth = DEFAULT_BORDER_WIDTH;
     private int mFillColor = DEFAULT_FILL_COLOR;
+
     private Bitmap mBitmap;
     private BitmapShader mBitmapShader;
     private int mBitmapWidth;
     private int mBitmapHeight;
+
     private float mDrawableRadius;
     private float mBorderRadius;
+
     private ColorFilter mColorFilter;
+
     private boolean mReady;
     private boolean mSetupPending;
     private boolean mBorderOverlay;
@@ -157,9 +165,6 @@ public class CircleImageView extends ImageView {
         invalidate();
     }
 
-    /**
-     * @deprecated Use {@link #setBorderColor(int)} instead
-     */
     @Deprecated
     public void setBorderColorResource(@ColorRes int borderColorRes) {
         setBorderColor(getContext().getResources().getColor(borderColorRes));

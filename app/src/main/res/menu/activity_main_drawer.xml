@@ -5,6 +5,7 @@
         <item
             android:id="@+id/nav_item_1"
             android:icon="@mipmap/nav_item_1"
+            android:checked="true"
             android:title="一句话聆听我心声" />
         <item
             android:id="@+id/nav_item_2"
@@ -28,12 +29,8 @@
             android:title="访问我们网站小窝" />
         <item
             android:id="@+id/nav_item_7"
-            android:icon="@mipmap/nav_item_7"
-            android:title="蓝星星秘密实验室" />
-        <item
-            android:id="@+id/nav_item_8"
             android:icon="@mipmap/nav_item_8"
-            android:title="检查获取新的版本" />
+            android:title="蓝星星秘密实验室" />
     </group>
 
 </menu>
