@@ -19,11 +19,4 @@ public class ThirdFragment extends mFragment{
 
         return view;
     }
-
-    @Override
-    public void onRefresh() {
-        super.onRefresh();
-
-    }
-
 }

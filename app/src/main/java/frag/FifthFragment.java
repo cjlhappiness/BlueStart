@@ -19,9 +19,4 @@ public class FifthFragment extends mFragment{
 
         return view;
     }
-
-    @Override
-    public void onRefresh() {
-        super.onRefresh();
-    }
 }

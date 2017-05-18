@@ -1,44 +1,35 @@
 package thread;
 
+import android.util.Log;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class mFutureTask implements Callable, Callback{
+public class mCallable implements Callable{
 
     private String url;
     private String[] data;
-    private Object object;
+    private mThreadCallBack callBack;
     private static final String KEY = "data";
 
-    public mFutureTask(String url){
-        this(url, "null");
+    public mCallable(String url, mThreadCallBack callBack){
+        this(url, callBack, "null");
     }
 
-    public mFutureTask(String url, String ...data){
+    public mCallable(String url, mThreadCallBack callBack, String ...data){
         this.url = url;
+        this.callBack = callBack;
         if (data != null){
             this.data = data.clone();
         }
     }
 
     @Override
-    public void onFailure(Call call, IOException e) {
-
-    }
-
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-        object = response.body().string();
-    }
-
-    @Override
     public Object call() throws Exception {
+        Object o = null;
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         if (data != null){
@@ -49,11 +40,20 @@ public class mFutureTask implements Callable, Callback{
         Request request = new Request.Builder().url(url).post(builder.build()).build();
         try {
             Response response = client.newCall(request).execute();
-            return response.body().string();
+            Log.e("test---", "call1: ");
+            Log.e("test---", "call2: ");
+            int code = response.code();
+            if (response.isSuccessful()){
+                if (code == 200){
+                    o = response.body().string();
+                }else{
+                    o = code+"";
+                }
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            o = "999";
         }
-//        client.newCall(request).enqueue(this);
+        callBack.callBack(o);
         return null;
     }
 }
