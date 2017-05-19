@@ -1,6 +1,9 @@
 package thread;
 
-import android.util.Log;
+/*
+网络请求任务类Callable
+*/
+
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import okhttp3.FormBody;
@@ -12,24 +15,22 @@ public class mCallable implements Callable{
 
     private String url;
     private String[] data;
-    private mThreadCallBack callBack;
     private static final String KEY = "data";
 
-    public mCallable(String url, mThreadCallBack callBack){
-        this(url, callBack, "null");
+    public mCallable(String url){
+        this(url, "null");
     }
 
-    public mCallable(String url, mThreadCallBack callBack, String ...data){
+    public mCallable(String url, String ...data){
         this.url = url;
-        this.callBack = callBack;
         if (data != null){
             this.data = data.clone();
         }
     }
 
     @Override
-    public Object call() throws Exception {
-        Object o = null;
+    public String call() throws Exception {
+        String s = null;
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         if (data != null){
@@ -40,20 +41,10 @@ public class mCallable implements Callable{
         Request request = new Request.Builder().url(url).post(builder.build()).build();
         try {
             Response response = client.newCall(request).execute();
-            Log.e("test---", "call1: ");
-            Log.e("test---", "call2: ");
             int code = response.code();
-            if (response.isSuccessful()){
-                if (code == 200){
-                    o = response.body().string();
-                }else{
-                    o = code+"";
-                }
-            }
+            if (code == 200) s = response.body().string();
         } catch (IOException e) {
-            o = "999";
         }
-        callBack.callBack(o);
-        return null;
+        return s;
     }
 }

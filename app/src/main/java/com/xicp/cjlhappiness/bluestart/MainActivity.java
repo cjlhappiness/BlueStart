@@ -1,9 +1,13 @@
 package com.xicp.cjlhappiness.bluestart;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,7 +38,7 @@ import frag.mFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public ExecutorService es;
+    private ExecutorService es;
 
     private DrawerLayout drawer;
     private FloatingActionButton fab;
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity
 
     private long keyBackTime;
     private int currentIndex;
+    private int user_id;
+    float down, up;
 
     private static final int THREAD_POOL = 5;
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth", "Fifth",
@@ -52,6 +58,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        user_id = intent.getIntExtra("id",-1);
 
         //ActionBar的替代品Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -242,11 +251,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN){
+            down = ev.getX();
+        }
+        if (ev.getAction() == MotionEvent.ACTION_UP){
+            up = ev.getX();
+        }
+
+        if (up - down > 300 && !drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.openDrawer(GravityCompat.START);
+            down = up = 0;
+        }
+
+        return super.dispatchTouchEvent(ev);
     }
 
     public ExecutorService getEs(){
         return es;
+    }
+
+    public static void startMainActivity(Activity activity, int id){
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.putExtra("id",id);
+        activity.startActivity(intent);
     }
 }
