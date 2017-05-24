@@ -18,7 +18,7 @@ public class mCallable implements Callable{
     private static final String KEY = "data";
 
     public mCallable(String url){
-        this(url, "null");
+        this(url, null);
     }
 
     public mCallable(String url, String ...data){
