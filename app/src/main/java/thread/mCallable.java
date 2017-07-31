@@ -44,6 +44,7 @@ public class mCallable implements Callable{
             int code = response.code();
             if (code == 200) s = response.body().string();
         } catch (IOException e) {
+
         }
         return s;
     }

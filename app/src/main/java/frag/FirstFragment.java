@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 
 import com.xicp.cjlhappiness.bluestart.R;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
 import util.Network;
 
 //第1个Fragment

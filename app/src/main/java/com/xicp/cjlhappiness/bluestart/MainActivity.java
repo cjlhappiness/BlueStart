@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     float down, up;
 
     private static final int THREAD_POOL = 5;
+    private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新"};
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth", "Fifth",
             "Sixth", "Seventh", "Eighth", "Ninth"};
 
@@ -67,19 +68,19 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //FloatingActionButton浮动按钮
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT)
-                        .setAction("Action Click", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(MainActivity.this, "---", Toast.LENGTH_SHORT).show();
-                            }
-                        }).show();
-            }
-        });
+//        fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT)
+//                        .setAction("Action Click", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Toast.makeText(MainActivity.this, "---", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }).show();
+//            }
+//        });
 
         //DrawerLayout侧滑
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         int position = getOptionsItemPosition(id);
-
+        Toast.makeText(this, MENU_TEXT[position], Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -199,22 +200,12 @@ public class MainActivity extends AppCompatActivity
 
     private int getOptionsItemPosition(int id){
         int position;
-        if (id == R.id.nav_item_1){
+        if (id == R.id.action_settings){
             position = 0;
-        }else if(id == R.id.nav_item_2){
+        }else if(id == R.id.action_update){
             position = 1;
-        }else if(id == R.id.nav_item_3){
-            position = 2;
-        }else if(id == R.id.nav_item_4){
-            position = 3;
-        }else if(id == R.id.nav_item_5){
-            position = 4;
-        }else if(id == R.id.nav_item_6){
-            position = 5;
-        }else if(id == R.id.nav_item_7){
-            position = 6;
         }else {
-            position = 7;
+            position = 2;
         }
         return position;
     }

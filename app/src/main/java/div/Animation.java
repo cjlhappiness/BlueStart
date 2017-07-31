@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -208,23 +209,17 @@ public class Animation extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private int getResId(){
-
-        int monthIndex = Date.getNowMonth() / 3;
+        int monthIndex = Date.getNowMonth();//2 3 4        5 6 7       8 9 10      11 1 2
         int resId;
-        switch (monthIndex){
-            case 0:
-                resId = R.mipmap.flower_flake;
-                break;
-            case 1:
-                resId = R.mipmap.grass_flake;
-                break;
-            case 2:
-                resId = R.mipmap.leaf_flake;
-                break;
-            default:
-                resId = R.mipmap.snow_flake;
-                break;
-        }
+        if (2 <= monthIndex && 5 > monthIndex)
+            resId = R.mipmap.flower_flake;//春樱花
+        else if(5 <= monthIndex && 8 > monthIndex)
+            resId = R.mipmap.grass_flake;//夏蒲公英
+        else if(8 <= monthIndex && 10 > monthIndex)
+            resId = R.mipmap.leaf_flake;//秋枫叶
+        else
+            resId = R.mipmap.snow_flake;//冬雪花
+
         return resId;
     }
 
