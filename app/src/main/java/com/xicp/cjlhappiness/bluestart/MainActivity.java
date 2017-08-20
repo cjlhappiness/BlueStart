@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     float down, up;
 
     private static final int THREAD_POOL = 5;
-    private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新"};
+    private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新", "退  出"};
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth", "Fifth",
             "Sixth", "Seventh", "Eighth", "Ninth"};
 
@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         int position = getOptionsItemPosition(id);
         Toast.makeText(this, MENU_TEXT[position], Toast.LENGTH_SHORT).show();
+        if (position == 2) finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -204,8 +205,10 @@ public class MainActivity extends AppCompatActivity
             position = 0;
         }else if(id == R.id.action_update){
             position = 1;
-        }else {
+        }else if (id == R.id.action_exit){
             position = 2;
+        }else {
+            position = 3;
         }
         return position;
     }

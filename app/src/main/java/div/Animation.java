@@ -209,13 +209,13 @@ public class Animation extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private int getResId(){
-        int monthIndex = Date.getNowMonth();//2 3 4        5 6 7       8 9 10      11 1 2
+        int monthIndex = Date.getNowMonth();//3 4 5       6 7 8       9 10 11       12 1 2
         int resId;
-        if (2 <= monthIndex && 5 > monthIndex)
+        if (3 <= monthIndex && 6 > monthIndex)
             resId = R.mipmap.flower_flake;//春樱花
-        else if(5 <= monthIndex && 8 > monthIndex)
+        else if(6 <= monthIndex && 9 > monthIndex)
             resId = R.mipmap.grass_flake;//夏蒲公英
-        else if(8 <= monthIndex && 10 > monthIndex)
+        else if(9 <= monthIndex && 12 > monthIndex)
             resId = R.mipmap.leaf_flake;//秋枫叶
         else
             resId = R.mipmap.snow_flake;//冬雪花

@@ -5,6 +5,8 @@ package thread;
 */
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -21,7 +23,7 @@ public class mCallable implements Callable{
         this(url, null);
     }
 
-    public mCallable(String url, String ...data){
+    public mCallable(String url, String[] data){
         this.url = url;
         if (data != null){
             this.data = data.clone();
@@ -29,8 +31,8 @@ public class mCallable implements Callable{
     }
 
     @Override
-    public String call() throws Exception {
-        String s = null;
+    public Object call() throws Exception {
+        Map m = new HashMap();
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         if (data != null){
@@ -42,10 +44,14 @@ public class mCallable implements Callable{
         try {
             Response response = client.newCall(request).execute();
             int code = response.code();
-            if (code == 200) s = response.body().string();
+            m.put("code", code);
+            if (code == 200){
+                String s = response.body().string();
+                m.put("content", s);
+            }
         } catch (IOException e) {
 
         }
-        return s;
+        return m;
     }
 }

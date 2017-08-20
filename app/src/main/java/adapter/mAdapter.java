@@ -35,11 +35,11 @@ public class mAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         return null;
     }
 
-    //刷新某一行数据
+    //刷新某一条数据
     public void updateSingleRow(ListView listView, int id){
         if (listView != null){
             int start = listView.getFirstVisiblePosition();
