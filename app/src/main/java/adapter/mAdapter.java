@@ -3,9 +3,9 @@ package adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import java.util.List;
 
@@ -40,25 +40,25 @@ public class mAdapter extends BaseAdapter{
     }
 
     //刷新某一条数据
-    public void updateSingleRow(ListView listView, int id){
-        if (listView != null){
-            int start = listView.getFirstVisiblePosition();
-            int stop = listView.getLastVisiblePosition();
+    public void updateSingleRow(AbsListView absListView, int id){
+        if (absListView != null){
+            int start = absListView.getFirstVisiblePosition();
+            int stop = absListView.getLastVisiblePosition();
             for (int i = start; i < stop ; i++){
                 if (id == i){
-                    View view = listView.getChildAt(i - start);
-                    getView(i, view, listView);
+                    View view = absListView.getChildAt(i - start);
+                    getView(i, view, absListView);
                     break;
                 }
             }
         }
     }
 
-    class ViewHolder{
-        ImageView img;
-        TextView time;
-        TextView title;
-        TextView content;
-    }
+class ViewHolder{
+    ImageView img;
+    TextView time;
+    TextView title;
+    TextView content;
+}
 
 }

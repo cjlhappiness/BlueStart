@@ -14,6 +14,8 @@ import util.Date;
 public class mFragment extends Fragment{
 
      private FutureTask task;
+    public final static int[] ID      = new int[]{0, 1};
+    public final static int[] USER_ID = new int[]{950125, 950422};
 
     public mFragment() {
     }

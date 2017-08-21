@@ -1,14 +1,17 @@
 package adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.xicp.cjlhappiness.bluestart.R;
+
+import java.util.Date;
 import java.util.List;
+import data.ThirdData;
 
 public class ThirdAdapter extends mAdapter{
 
@@ -19,13 +22,27 @@ public class ThirdAdapter extends mAdapter{
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view;
+        ThirdData thirdData = (ThirdData)data.get(i);
         if (convertView != null){
             view = convertView;
         }else {
             view = LayoutInflater.from(context).inflate(R.layout.third_fiag_item, null);
+            if (util.Date.getNowDayInMonth() == i){
+                view.setBackgroundColor(Color.RED);
+            }
         }
+        ImageView background = (ImageView) view.findViewById(R.id.third_flag_item_background);
         TextView content = (TextView) view.findViewById(R.id.third_flag_item_content);
-        content.setText((String)data.get(i));
+        int state = thirdData.getState();
+        String day = thirdData.getDay();
+        if (state == 1){
+
+        }else if (state == -1){
+
+        }else {
+
+        }
+        content.setText(String.valueOf(day));
         return view;
     }
 }
