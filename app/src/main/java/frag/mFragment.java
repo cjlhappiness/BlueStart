@@ -5,13 +5,13 @@ Fragment类父类
 */
 
 import android.support.v4.app.Fragment;
+import java.util.Map;
 import java.util.concurrent.FutureTask;
 import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
-import util.Date;
 
-public class mFragment extends Fragment{
+public class mFragment extends Fragment implements mCallBack{
 
      private FutureTask task;
     public final static int[] ID      = new int[]{0, 1};
@@ -24,5 +24,14 @@ public class mFragment extends Fragment{
     public void onRefresh(String url, mCallBack c){
         mCallable callable = new mCallable(url);
         new mFutureTask(callable, c);
+    }
+
+    public void loadGif(){
+        
+    }
+
+    @Override
+    public void jsonData(Map m) {
+
     }
 }
