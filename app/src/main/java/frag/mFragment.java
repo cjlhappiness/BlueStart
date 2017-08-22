@@ -5,15 +5,21 @@ Fragment类父类
 */
 
 import android.support.v4.app.Fragment;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
 import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
+import pl.droidsonroids.gif.*;
+import com.xicp.cjlhappiness.bluestart.R;
 
 public class mFragment extends Fragment implements mCallBack{
 
-     private FutureTask task;
+    public GifDrawable gifDrawable;
+
+    private FutureTask task;
     public final static int[] ID      = new int[]{0, 1};
     public final static int[] USER_ID = new int[]{950125, 950422};
 
@@ -26,8 +32,14 @@ public class mFragment extends Fragment implements mCallBack{
         new mFutureTask(callable, c);
     }
 
-    public void loadGif(){
-        
+    public GifDrawable loadGif(){
+        GifDrawable gifDrawable = null;
+        try {
+            gifDrawable = new GifDrawable(getResources(),R.mipmap.load_gif);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gifDrawable;
     }
 
     @Override

@@ -3,6 +3,7 @@ package frag;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import adapter.ThirdAdapter;
 import data.ThirdData;
 import util.Date;
 import util.Network;
+import pl.droidsonroids.gif.*;
 
 //第3个Fragment
 public class ThirdFragment extends mFragment implements View.OnClickListener,
@@ -26,12 +29,13 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
 
     private List data;
     private View view;
+    private LinearLayout layout;
     private GridView gridView;
     private TextView textView;
     private EditText editText;
     private Button previousBtn, nextBtn;
+    private GifImageView gifImageView;
     private ThirdAdapter adapter;
-
     private int nowSelect, nowDay;
     private int selectMonth;
 
@@ -51,8 +55,13 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         previousBtn = (Button) view.findViewById(R.id.third_previous);
         nextBtn = (Button) view.findViewById(R.id.third_next);
         gridView = (GridView) view.findViewById(R.id.third_grid);
+        previousBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(this);
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
+        gifImageView = (GifImageView) view.findViewById(R.id.third_load_gif);
+        gifDrawable = loadGif();
+        gifImageView.setImageDrawable(gifDrawable);
     }
 
     private void initData(){
@@ -61,7 +70,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         adapter = new ThirdAdapter(getActivity(), data);
         gridView.setAdapter(adapter);
         nowSelect = nowDay = Date.getNowDayInMonth();
-        selectMonth = Date.getNowMonth();
+        selectMonth = 0;
         int firstDay = Date.getFirstDayInMonth();
         int dayCount = Date.getDayCountInMonth();
         onRefresh(Network.THIRD_GET, this);
@@ -101,8 +110,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        int id = view.getId();
-        switch (id){
+        switch (v.getId()){
             case R.id.third_previous:
                 selectMonth --;
                 break;

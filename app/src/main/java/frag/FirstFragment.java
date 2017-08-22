@@ -10,6 +10,8 @@ import com.xicp.cjlhappiness.bluestart.R;
 
 import java.util.Date;
 import java.util.Map;
+
+import pl.droidsonroids.gif.GifImageView;
 import thread.mCallBack;
 import util.Network;
 
@@ -17,6 +19,7 @@ import util.Network;
 public class FirstFragment extends mFragment implements mCallBack{
 
     public boolean isRefresh;
+    private GifImageView gifImageView;
 
     @Nullable
     @Override

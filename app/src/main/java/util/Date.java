@@ -29,7 +29,8 @@ public class Date {
         Calendar c = getCalendar();
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH) + 1;
-        l.add(year, month);
+        l.add(year);
+        l.add(month);
         return l;
     }
 
@@ -48,7 +49,7 @@ public class Date {
 
     //获得当前系统年份
     public static int getNowYear(){
-        int year, month;
+        int year;
         Calendar c = getCalendar();
         year = c.get(Calendar.YEAR);
         return year;
