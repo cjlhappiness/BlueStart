@@ -7,7 +7,9 @@ package thread;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import okhttp3.FormBody;
@@ -52,7 +54,6 @@ public class mCallable implements Callable{
                 m.put("content", s);
             }
         } catch (IOException e) {
-
         }
         return m;
     }

@@ -2,8 +2,9 @@ package frag;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +13,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import adapter.ThirdAdapter;
 import data.ThirdData;
-import thread.mCallBack;
-import thread.mCallable;
-import thread.mFutureTask;
 import util.Date;
 import util.Network;
 import pl.droidsonroids.gif.*;
 import util.Parse;
 
 //第3个Fragment
-public class ThirdFragment extends mFragment implements View.OnClickListener, mCallBack,
+public class ThirdFragment extends mFragment implements View.OnClickListener,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
     private List data;
@@ -43,6 +38,14 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, mC
     private ThirdAdapter adapter;
     private int nowSelect, nowDay;
     private int selectMonth;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            LoadData((Map) msg.getData().getSerializable("map"));
+        }
+    };
 
     @Nullable
     @Override
@@ -76,7 +79,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, mC
         gridView.setAdapter(adapter);
         nowSelect = nowDay = Date.getNowDayInMonth();
         selectMonth = 0;
-        onRefresh(Network.THIRD_GET, this, Date.getDateString()[1]);
+        onRefresh(Network.THIRD_GET, handler, Date.getDateString()[1]);
     }
 
     private void initItem(List list){
@@ -115,35 +118,16 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, mC
         }
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
-        onRefresh(Network.THIRD_GET, this, Date.getDateString(selectMonth)[1]);
+        onRefresh(Network.THIRD_GET, handler, Date.getDateString(selectMonth)[1]);
     }
 
-    public void onRefresh(String url,  mCallBack c, String ...data){
-        mCallable callable = new mCallable(url, data);
-        futureTask = new mFutureTask<Object>(callable);
-        exec.submit(futureTask);
-        Map m = null;
+    public void LoadData(Map m) {
         try {
-            m = (Map) futureTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            if ((int)m.get("code") == 200) {
+                String json = (String) m.get("content");
+                initItem(Parse.parseThirdJson(json));
+            }
+        }catch (NullPointerException e){
         }
-        aa();
-        Toast.makeText(getActivity(), "onRefresh", Toast.LENGTH_SHORT).show();
-    }
-
-    public void aa(){
-        Toast.makeText(getActivity(), "----", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void jsonData(Map m) {
-        Log.e("jsonData2","");
-//        if ((int)m.get("code") == 200) {
-//            String json = (String) m.get("content");
-//            initItem(Parse.parseThirdJson(json));
-//        }
     }
 }

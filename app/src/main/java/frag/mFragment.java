@@ -4,19 +4,11 @@ package frag;
 Fragment类父类
 */
 
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
 import pl.droidsonroids.gif.*;
@@ -26,7 +18,6 @@ public class mFragment extends Fragment{
 
     public GifDrawable gifDrawable;
     public mFutureTask futureTask;
-    private FutureTask task;
 
     public ExecutorService exec = Executors.newFixedThreadPool(5);
 
@@ -37,20 +28,10 @@ public class mFragment extends Fragment{
     }
 
     //请求网络数据
-    public void onRefresh(String url, final mCallBack c, String ...data){
+    public void onRefresh(String url, Handler handler, String ...data){
         mCallable callable = new mCallable(url, data);
-        futureTask = new mFutureTask<Object>(callable);
+        futureTask = new mFutureTask(callable, handler);
         exec.submit(futureTask);
-        Map m = null;
-        try {
-            m = (Map) futureTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        c.jsonData(m);
-        Toast.makeText(getActivity(), "onRefresh", Toast.LENGTH_SHORT).show();
     }
 
     public GifDrawable loadGif(){
