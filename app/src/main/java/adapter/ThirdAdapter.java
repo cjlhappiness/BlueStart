@@ -23,6 +23,9 @@ public class ThirdAdapter extends mAdapter{
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view;
         ThirdData thirdData = (ThirdData)data.get(i);
+        if (i < util.Date.getFirstDayInMonth()){
+            return null;
+        }
         if (convertView != null){
             view = convertView;
         }else {

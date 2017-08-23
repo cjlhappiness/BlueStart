@@ -4,6 +4,8 @@ package thread;
 网络请求任务类Callable
 */
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,4 +56,6 @@ public class mCallable implements Callable{
         }
         return m;
     }
+
+
 }

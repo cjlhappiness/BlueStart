@@ -16,7 +16,7 @@ import thread.mCallBack;
 import util.Network;
 
 //第1个Fragment
-public class FirstFragment extends mFragment implements mCallBack{
+public class FirstFragment extends mFragment{
 
     public boolean isRefresh;
     private GifImageView gifImageView;
@@ -26,12 +26,6 @@ public class FirstFragment extends mFragment implements mCallBack{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.first_flag_main, null);
-        onRefresh(Network.FIRST_GET, this);
         return view;
-    }
-
-    @Override
-    public void jsonData(Map m) {
-
     }
 }

@@ -11,25 +11,30 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import adapter.ThirdAdapter;
 import data.ThirdData;
+import thread.mCallBack;
+import thread.mCallable;
+import thread.mFutureTask;
 import util.Date;
 import util.Network;
 import pl.droidsonroids.gif.*;
+import util.Parse;
 
 //第3个Fragment
-public class ThirdFragment extends mFragment implements View.OnClickListener,
+public class ThirdFragment extends mFragment implements View.OnClickListener, mCallBack,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
     private List data;
     private View view;
-    private LinearLayout layout;
     private GridView gridView;
     private TextView textView;
     private EditText editText;
@@ -65,30 +70,20 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
     }
 
     private void initData(){
-        textView.setText(Date.getDateString());
+        textView.setText(Date.getDateString()[0]);
         data = new ArrayList();
         adapter = new ThirdAdapter(getActivity(), data);
         gridView.setAdapter(adapter);
         nowSelect = nowDay = Date.getNowDayInMonth();
         selectMonth = 0;
-        int firstDay = Date.getFirstDayInMonth();
-        int dayCount = Date.getDayCountInMonth();
-        onRefresh(Network.THIRD_GET, this);
-        initItem(firstDay, dayCount);
+        onRefresh(Network.THIRD_GET, this, Date.getDateString()[1]);
     }
 
-    private void initItem(int firstDay, int dayCount){
+    private void initItem(List list){
         if (data.size() != 0) {
             data.clear();
         }
-        for (int i = 0; i< firstDay; i++) {
-            ThirdData thirdData = new ThirdData(-1, -1, 0, "", "");
-            data.add(thirdData);
-        }
-        for (int i = 1; i<= dayCount; i++) {
-            ThirdData thirdData = new ThirdData(ID[0], USER_ID[0], 0, String.valueOf(i), String.valueOf(i));
-            data.add(thirdData);
-        }
+        data.addAll(list);
         adapter.notifyDataSetChanged();
     }
 
@@ -118,15 +113,37 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
                 selectMonth ++;
                 break;
         }
-        String date = Date.getDateString(selectMonth);
+        String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
-        int firstDay = Date.getFirstDayInMonth(selectMonth);
-        int dayCount = Date.getDayCountInMonth(selectMonth);
-        initItem(firstDay, dayCount);
+        onRefresh(Network.THIRD_GET, this, Date.getDateString(selectMonth)[1]);
+    }
+
+    public void onRefresh(String url,  mCallBack c, String ...data){
+        mCallable callable = new mCallable(url, data);
+        futureTask = new mFutureTask<Object>(callable);
+        exec.submit(futureTask);
+        Map m = null;
+        try {
+            m = (Map) futureTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        aa();
+        Toast.makeText(getActivity(), "onRefresh", Toast.LENGTH_SHORT).show();
+    }
+
+    public void aa(){
+        Toast.makeText(getActivity(), "----", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void jsonData(Map m) {
-
+        Log.e("jsonData2","");
+//        if ((int)m.get("code") == 200) {
+//            String json = (String) m.get("content");
+//            initItem(Parse.parseThirdJson(json));
+//        }
     }
 }

@@ -11,15 +11,21 @@ import java.util.List;
 public class Date {
 
     //获得当前系统中年月字符串
-    public static String getDateString(){
+    public static String[] getDateString(){
         List l = getDate();
-        return String.format("%d年%d月", l.get(0), l.get(1));
+        String dateO  = String.format("%d年%d月", l.get(0), l.get(1));
+        String dateT  = String.format("%d%d", l.get(0), l.get(1));
+        String[] date = new String[]{dateO, dateT};
+        return date;
     }
 
     //获得指定日期年月字符串
-    public static String getDateString(int monthLength){
+    public static String[] getDateString(int monthLength){
         List l = getDate(monthLength);
-        return String.format("%d年%d月", l.get(0), l.get(1));
+        String dateO  = String.format("%d年%d月", l.get(0), l.get(1));
+        String dateT  = String.format("%d%d", l.get(0), l.get(1));
+        String[] date = new String[]{dateO, dateT};
+        return date;
     }
 
     //获得当前系统中年月
