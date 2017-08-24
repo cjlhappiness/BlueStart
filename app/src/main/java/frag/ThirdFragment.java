@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,18 +90,31 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         if (data.size() != 0) {
             data.clear();
         }
-        for (int i = 0 ; i< Date.getFirstDayInMonth(); i++){
+        if (Date.getFirstDayInMonth() != 7){
+            for (int i = 0 ; i< Date.getFirstDayInMonth(); i++){
                 data.add(null);
             }
+        }
         data.addAll(list);
+        editText.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
 
     private void fillItem(){
-        for (int i = 0 ; i < Date.getFirstDayInMonth() + Date.getDayCountInMonth(); i++){
+        if (data.size() != 0) {
+            data.clear();
+        }
+        int nullData = Date.getFirstDayInMonth(selectMonth);
+        if (nullData != 7) {
+            for (int i = 0; i < nullData; i++) {
+                data.add(null);
+            }
+        }
+        for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
             data.add(null);
         }
-        adapter = new ThirdAdapter(getActivity(), data);
+        Log.d("fillItem: ",data.size()+"");
+        adapter = new ThirdAdapter(getActivity(), data, selectMonth);
         gridView.setAdapter(adapter);
     }
 
@@ -134,20 +148,24 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
                 selectMonth ++;
                 break;
         }
+        editText.setVisibility(View.INVISIBLE);
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
-        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[1], null), OPERATE_CODE[1]);
+        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
     }
 
     public void parseData(Map m) {
         try {
-            if ((int)m.get("code") == 200) {
+            if ((int)m.get("code") == 200 && !m.get("content").equals("null")) {
+                Log.d("test", "parseData0");
                 if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
                     Object json = m.get("content");
                     fillItem(Parse.parseThirdJson(json.toString()));
                 }else {
-
                 }
+            }else {
+                Log.d("test", "parseData1");
+                fillItem();
             }
         }catch (NullPointerException e){
         }

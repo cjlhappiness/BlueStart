@@ -14,6 +14,10 @@ public class mAdapter extends BaseAdapter{
     protected Context context;
     protected List<Object> data;
 
+    public mAdapter(Context context){
+        this.context = context;
+    }
+
     public mAdapter(Context context, List<Object> data){
         this.context = context;
         this.data = data;
