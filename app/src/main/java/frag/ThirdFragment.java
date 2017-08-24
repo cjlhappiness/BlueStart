@@ -13,8 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 import adapter.ThirdAdapter;
@@ -43,7 +46,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            LoadData((Map) msg.getData().getSerializable("map"));
+            parseData((Map) msg.getData().getSerializable("map"));
         }
     };
 
@@ -77,21 +80,35 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         data = new ArrayList();
         adapter = new ThirdAdapter(getActivity(), data);
         gridView.setAdapter(adapter);
-        nowSelect = nowDay = Date.getNowDayInMonth();
+        nowSelect = nowDay = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         selectMonth = 0;
-        onRefresh(Network.THIRD_GET, handler, Date.getDateString()[1]);
+        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
     }
 
-    private void initItem(List list){
+    private void fillItem(List list){
         if (data.size() != 0) {
             data.clear();
         }
+        for (int i = 0 ; i< Date.getFirstDayInMonth(); i++){
+                data.add(null);
+            }
         data.addAll(list);
         adapter.notifyDataSetChanged();
     }
 
+    private void fillItem(){
+        for (int i = 0 ; i < Date.getFirstDayInMonth() + Date.getDayCountInMonth(); i++){
+            data.add(null);
+        }
+        adapter = new ThirdAdapter(getActivity(), data);
+        gridView.setAdapter(adapter);
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (data.get(position) == null){
+            return;
+        }
         if (nowDay != nowSelect){
             parent.getChildAt(nowSelect).setBackgroundColor(Color.alpha(0));
         }
@@ -102,8 +119,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-        return false;
+        Date.getDateTime();
+//        LoadOrUpdateData(Network.THIRD_SET, handler, createParams(), DATA_CODE[1]);
+        return true;
     }
 
     @Override
@@ -118,16 +136,35 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         }
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
-        onRefresh(Network.THIRD_GET, handler, Date.getDateString(selectMonth)[1]);
+        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[1], null), OPERATE_CODE[1]);
     }
 
-    public void LoadData(Map m) {
+    public void parseData(Map m) {
         try {
             if ((int)m.get("code") == 200) {
-                String json = (String) m.get("content");
-                initItem(Parse.parseThirdJson(json));
+                if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
+                    Object json = m.get("content");
+                    fillItem(Parse.parseThirdJson(json.toString()));
+                }else {
+
+                }
             }
         }catch (NullPointerException e){
         }
+    }
+
+    public List createParams(int code, ThirdData d){
+        List params = new ArrayList();
+        if (code == OPERATE_CODE[0]){
+            String[] s = new String[]{"date", Date.getDateString(selectMonth)[1]};
+            params.add(s);
+        }else {
+            String[] s1 = new String[]{"id", String.valueOf(d.getId())};
+            String[] s2 = new String[]{"userId", String.valueOf(d.getUserId())};
+            String[] s3 = new String[]{"content", editText.getText().toString()};
+            String[] s4 = new String[]{"state", String.valueOf((-d.getState()))};
+            String[] s5 = new String[]{"datetime", Date.getDateTime()};
+        }
+        return params;
     }
 }

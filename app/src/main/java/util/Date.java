@@ -4,6 +4,8 @@ package util;
 日期时间工具类
 */
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -14,7 +16,7 @@ public class Date {
     public static String[] getDateString(){
         List l = getDate();
         String dateO  = String.format("%d年%d月", l.get(0), l.get(1));
-        String dateT  = String.format("%d%d", l.get(0), l.get(1));
+        String dateT  = String.format("%d%02d", l.get(0), l.get(1));
         String[] date = new String[]{dateO, dateT};
         return date;
     }
@@ -23,7 +25,7 @@ public class Date {
     public static String[] getDateString(int monthLength){
         List l = getDate(monthLength);
         String dateO  = String.format("%d年%d月", l.get(0), l.get(1));
-        String dateT  = String.format("%d%d", l.get(0), l.get(1));
+        String dateT  = String.format("%d%02d", l.get(0), l.get(1));
         String[] date = new String[]{dateO, dateT};
         return date;
     }
@@ -133,6 +135,13 @@ public class Date {
         c.roll(Calendar.DATE, -1);
         count = c.get(Calendar.DATE);
         return count;
+    }
+
+    public static String getDateTime(){
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateTime = format.format(date);
+        return dateTime;
     }
 
     //实例化一个日历对象

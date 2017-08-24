@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.xicp.cjlhappiness.bluestart.R;
-
-import java.util.Date;
 import java.util.List;
 import data.ThirdData;
+import util.Date;
 
 public class ThirdAdapter extends mAdapter{
 
@@ -23,16 +22,20 @@ public class ThirdAdapter extends mAdapter{
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view;
         ThirdData thirdData = (ThirdData)data.get(i);
-        if (i < util.Date.getFirstDayInMonth()){
-            return null;
-        }
         if (convertView != null){
             view = convertView;
         }else {
             view = LayoutInflater.from(context).inflate(R.layout.third_fiag_item, null);
-            if (util.Date.getNowDayInMonth() == i){
+
+            if (Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1 == i){
                 view.setBackgroundColor(Color.RED);
             }
+        }
+        if (thirdData == null){
+            view.setVisibility(View.INVISIBLE);
+            return view;
+        }else {
+            view.setVisibility(View.VISIBLE);
         }
         ImageView background = (ImageView) view.findViewById(R.id.third_flag_item_background);
         TextView content = (TextView) view.findViewById(R.id.third_flag_item_content);

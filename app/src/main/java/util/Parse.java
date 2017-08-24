@@ -1,5 +1,7 @@
 package util;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +27,7 @@ public class Parse {
         return null;
     }
 
-    //{"id":"1","date":"201708","content":"\u4f60\u662f","day":"1","state":"2"}
+    //解析小红花数据
     public static List parseThirdJson(String json){
         List list = new ArrayList();
         try {
@@ -33,10 +35,10 @@ public class Parse {
             for (int i = 0 ; i < jsonArray.length() ; i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 int id = jsonObject.getInt("id");
-                int userId = jsonObject.getInt("id");
-                int state = jsonObject.getInt("state");
+                int userId = jsonObject.getInt("userId");
                 String day = jsonObject.getString("day");
                 String content = jsonObject.getString("content");
+                int state = jsonObject.getInt("state");
                 ThirdData data = new ThirdData(id, userId, state, day, content);
                 list.add(data);
             }
