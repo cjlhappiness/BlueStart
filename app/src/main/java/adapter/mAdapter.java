@@ -44,12 +44,12 @@ public class mAdapter extends BaseAdapter{
     }
 
     //刷新某一条数据
-    public void updateSingleRow(AbsListView absListView, int id){
+    public void updateSingleRow(AbsListView absListView, int position){
         if (absListView != null){
             int start = absListView.getFirstVisiblePosition();
             int stop = absListView.getLastVisiblePosition();
             for (int i = start; i < stop ; i++){
-                if (id == i){
+                if (position == i){
                     View view = absListView.getChildAt(i - start);
                     getView(i, view, absListView);
                     break;

@@ -4,10 +4,7 @@ package thread;
 网络请求任务类Callable
 */
 
-import android.util.Log;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +18,6 @@ public class mCallable implements Callable{
 
     private String url;
     private List params;
-    private static final String KEY = "data";
 
     public mCallable(String url){
         this(url, null);

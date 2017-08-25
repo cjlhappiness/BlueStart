@@ -7,14 +7,20 @@ Fragment类父类
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
 import pl.droidsonroids.gif.*;
+import util.Parse;
+
 import com.xicp.cjlhappiness.bluestart.R;
 
 public class mFragment extends Fragment{
@@ -37,15 +43,11 @@ public class mFragment extends Fragment{
         mCallable callable = new mCallable(url, params);
         futureTask = new mFutureTask(callable, handler, operateCode);
         exec.submit(futureTask);
+        ((mCallBack) getActivity()).isBegin(operateCode);
     }
 
-    public GifDrawable loadGif(){
-        GifDrawable gifDrawable = null;
-        try {
-            gifDrawable = new GifDrawable(getResources(),R.mipmap.load_gif);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return gifDrawable;
+    public void parseData(Map m) {
+        ((mCallBack) getActivity()).isFinish();
     }
+
 }

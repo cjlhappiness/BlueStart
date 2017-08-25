@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +15,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 import adapter.ThirdAdapter;
 import data.ThirdData;
 import util.Date;
 import util.Network;
-import pl.droidsonroids.gif.*;
 import util.Parse;
 
 //第3个Fragment
-public class ThirdFragment extends mFragment implements View.OnClickListener,
+public class ThirdFragment extends mFragment implements View.OnClickListener, TextWatcher,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
     private List data;
@@ -38,10 +35,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
     private TextView textView;
     private EditText editText;
     private Button previousBtn, nextBtn;
-    private GifImageView gifImageView;
     private ThirdAdapter adapter;
-    private int nowSelect, nowDay;
-    private int selectMonth;
+    private boolean isLongClick;
+    private int selectMonth, clickPosition, longClickPosition;
 
     private Handler handler = new Handler(){
         @Override
@@ -71,9 +67,8 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         nextBtn.setOnClickListener(this);
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
-        gifImageView = (GifImageView) view.findViewById(R.id.third_load_gif);
-        gifDrawable = loadGif();
-        gifImageView.setImageDrawable(gifDrawable);
+        editText.addTextChangedListener(this);
+
     }
 
     private void initData(){
@@ -81,7 +76,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         data = new ArrayList();
         adapter = new ThirdAdapter(getActivity(), data);
         gridView.setAdapter(adapter);
-        nowSelect = nowDay = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
+        clickPosition = longClickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         selectMonth = 0;
         LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
     }
@@ -113,28 +108,31 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
             data.add(null);
         }
-        Log.d("fillItem: ",data.size()+"");
         adapter = new ThirdAdapter(getActivity(), data, selectMonth);
         gridView.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (data.get(position) == null){
+        if (position < Date.getFirstDayInMonth(selectMonth)){
             return;
         }
-        if (nowDay != nowSelect){
-            parent.getChildAt(nowSelect).setBackgroundColor(Color.alpha(0));
+        parent.getChildAt(clickPosition).setBackgroundColor(Color.alpha(0));
+        view.setBackgroundColor(Color.argb(75, 255, 0, 0));
+        clickPosition = position;
+        if (data.get(position) != null){
+            editText.setText(((ThirdData)data.get(position)).getContent());
         }
-        view.setBackgroundColor(Color.RED);
-        nowSelect = position;
-        editText.setText(((ThirdData)data.get(position)).getContent());
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Date.getDateTime();
-//        LoadOrUpdateData(Network.THIRD_SET, handler, createParams(), DATA_CODE[1]);
+        if (selectMonth == 0){
+            isLongClick = true;
+            longClickPosition = position;
+            List params = createParams(OPERATE_CODE[1], (ThirdData) data.get(position));
+            LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[1]);
+        }
         return true;
     }
 
@@ -151,24 +149,37 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
         editText.setVisibility(View.INVISIBLE);
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
+        switchButtonEnabled(false);
         LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
     }
 
+
+    @Override
     public void parseData(Map m) {
+        super.parseData(m);
         try {
             if ((int)m.get("code") == 200 && !m.get("content").equals("null")) {
-                Log.d("test", "parseData0");
+                Object json = m.get("content");
                 if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
-                    Object json = m.get("content");
                     fillItem(Parse.parseThirdJson(json.toString()));
-                }else {
+                }else{
+                    int position;
+                    if (isLongClick){
+                        position = longClickPosition;
+                    }else {
+                        position = clickPosition;
+                    }
+                    data.remove(position);
+                    data.add(position, Parse.parseThirdJson(json.toString()).get(0));
+                    adapter.updateSingleRow(gridView, position);
+                    isLongClick = false;
                 }
             }else {
-                Log.d("test", "parseData1");
                 fillItem();
             }
         }catch (NullPointerException e){
         }
+        switchButtonEnabled(true);
     }
 
     public List createParams(int code, ThirdData d){
@@ -180,9 +191,41 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
             String[] s1 = new String[]{"id", String.valueOf(d.getId())};
             String[] s2 = new String[]{"userId", String.valueOf(d.getUserId())};
             String[] s3 = new String[]{"content", editText.getText().toString()};
-            String[] s4 = new String[]{"state", String.valueOf((-d.getState()))};
-            String[] s5 = new String[]{"datetime", Date.getDateTime()};
+            int state = d.getState();
+            if (d.getState() == 0){
+                state = 1;
+            }else {
+                state = -state;
+            }
+            String[] s4 = new String[]{"state", String.valueOf(state)};
+            params.add(s1);
+            params.add(s2);
+            params.add(s3);
+            params.add(s4);
         }
         return params;
+    }
+
+    public void switchButtonEnabled(boolean isSwitch){
+            previousBtn.setEnabled(isSwitch);
+            nextBtn.setEnabled(isSwitch);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        ThirdData d = (ThirdData) data.get(clickPosition);
+        if (d.getContent().equals(s.toString())) {
+            return;
+        }
+        List params = createParams(OPERATE_CODE[1], (ThirdData) data.get(clickPosition));
+        LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[1]);
     }
 }

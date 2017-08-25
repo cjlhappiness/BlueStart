@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -34,26 +33,31 @@ import frag.SeventhFragment;
 import frag.SixthFragment;
 import frag.ThirdFragment;
 import frag.mFragment;
+import pl.droidsonroids.gif.*;
+import thread.mCallBack;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener , mCallBack {
 
     private ExecutorService es;
 
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private FragmentManager fm;
+    private GifImageView gifImageView;
+    private GifDrawable gifDrawable;
     private List<Integer> backStackList;
 
     private long keyBackTime;
     private int currentIndex;
     private int user_id;
-    float down, up;
+
+    private float down;
 
     private static final int THREAD_POOL = 5;
     private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新", "退  出"};
-    private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth", "Fifth",
-            "Sixth", "Seventh", "Eighth", "Ninth"};
+    private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth",
+            "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 //        navigationView.getMenu().getItem(0).setChecked(true);
+
+        gifImageView = (GifImageView) findViewById(R.id.gif_image_View);
+        try {
+            gifDrawable = new GifDrawable(getResources(), R.mipmap.load_gif);
+            gifImageView.setImageDrawable(gifDrawable);
+            gifDrawable.stop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         mFragment fragment = createFragment(0);
         fm = getSupportFragmentManager();
@@ -246,16 +260,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        float up;
+        up = 0;
         if (ev.getAction() == MotionEvent.ACTION_DOWN){
             down = ev.getX();
         }
+
         if (ev.getAction() == MotionEvent.ACTION_UP){
             up = ev.getX();
         }
 
         if (up - down > 300 && !drawer.isDrawerOpen(GravityCompat.START)){
             drawer.openDrawer(GravityCompat.START);
-            down = up = 0;
         }
 
         return super.dispatchTouchEvent(ev);
@@ -270,4 +286,21 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra("id",id);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void isBegin(int operateCode) {
+        if (operateCode == mFragment.OPERATE_CODE[0]) {
+            gifImageView.setVisibility(View.VISIBLE);
+            gifDrawable.start();
+        }
+    }
+
+    @Override
+    public void isFinish() {
+        if (gifImageView.getVisibility() == View.VISIBLE){
+            gifImageView.setVisibility(View.INVISIBLE);
+            gifDrawable.stop();
+        }
+    }
+
 }

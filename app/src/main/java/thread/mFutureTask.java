@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Callable;

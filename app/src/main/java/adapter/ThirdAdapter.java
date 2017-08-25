@@ -34,8 +34,8 @@ public class ThirdAdapter extends mAdapter{
         }else {
             view = LayoutInflater.from(context).inflate(R.layout.third_fiag_item, null);
         }
+        int firstDay = Date.getFirstDayInMonth(selectMonth);
         if (thirdData == null){
-            int firstDay = Date.getFirstDayInMonth(selectMonth);
             if (selectMonth != 0){
                 TextView content = (TextView) view.findViewById(R.id.third_flag_item_content);
                 if (firstDay == 7){
@@ -48,25 +48,31 @@ public class ThirdAdapter extends mAdapter{
             }else {
                 view.setVisibility(View.INVISIBLE);
             }
-
             return view;
-        }else {
-            if (Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1 == i){
-                view.setBackgroundColor(Color.RED);
-            }
         }
+
         ImageView background = (ImageView) view.findViewById(R.id.third_flag_item_background);
         TextView content = (TextView) view.findViewById(R.id.third_flag_item_content);
         int state = thirdData.getState();
         String day = thirdData.getDay();
+        if (Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1 == i){
+            content.setTextColor(Color.RED);
+            view.setBackgroundColor(Color.argb(75, 255, 0, 0));
+        }
         if (state == 1){
-
+            background.setImageResource(R.mipmap.flower_good);
         }else if (state == -1){
-
+            background.setImageResource(R.mipmap.flower_bad);
         }else {
 
         }
-        content.setText(String.valueOf(day));
+        if (firstDay == 7){
+            content.setText(String.valueOf(i + 1));
+        }else if (i >= firstDay) {
+            content.setText(String.valueOf(i - firstDay + 1));
+        }else {
+            view.setVisibility(View.INVISIBLE);
+        }
         return view;
     }
 }

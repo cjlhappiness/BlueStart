@@ -7,24 +7,24 @@ package util;
 public class Network {
 
     //数据请求地址
-    public static final String FIRST_GET   = "http://cjlhappiness.xicp.net/BlueStart/getFirstJSON.php";
-    public static final String FIRST_SET   = "http://cjlhappiness.xicp.net/BlueStart/setFirstJOSN.php";
-    public static final String SECOND_GET  = "http://cjlhappiness.xicp.net/BlueStart/getSecondJSON.php";
-    public static final String SECOND_SET  = "http://cjlhappiness.xicp.net/BlueStart/setSecondJSON.php";
-    public static final String THIRD_GET   = "http://cjlhappiness.xicp.net/BlueStart/getThirdJSON.php";
-    public static final String THIRD_SET   = "http://cjlhappiness.xicp.net/BlueStart/setThirdJSON.php";
-    public static final String FOURTH_GET  = "http://cjlhappiness.xicp.net/BlueStart/getFourthJSON.php";
-    public static final String FOURTH_SET  = "http://cjlhappiness.xicp.net/BlueStart/setFourthJSON.php";
-    public static final String FIFTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getFifthJSON.php";
-    public static final String FIFTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setFifthJSON.php";
-    public static final String SIXTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getSixthJSON.php";
-    public static final String SIXTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setSixthJSON.php";
-    public static final String SEVENTH_GET = "http://cjlhappiness.xicp.net/BlueStart/getSeventhJSON.php";
-    public static final String SEVENTH_SET = "http://cjlhappiness.xicp.net/BlueStart/setSeventhJSON.php";
-    public static final String EIGHTH_GET  = "http://cjlhappiness.xicp.net/BlueStart/getEighthJSON.php";
-    public static final String EIGHTH_SET  = "http://cjlhappiness.xicp.net/BlueStart/setEighthJSON.php";
-    public static final String NINTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getNinthJSON.php";
-    public static final String NINTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setNinthJSON.php";
+    public static final String FIRST_GET   = "http://cjlhappiness.xicp.net/BlueStart/getFirst.php";
+    public static final String FIRST_SET   = "http://cjlhappiness.xicp.net/BlueStart/setFirst.php";
+    public static final String SECOND_GET  = "http://cjlhappiness.xicp.net/BlueStart/getSecond.php";
+    public static final String SECOND_SET  = "http://cjlhappiness.xicp.net/BlueStart/setSecond.php";
+    public static final String THIRD_GET   = "http://cjlhappiness.xicp.net/BlueStart/getThird.php";
+    public static final String THIRD_SET   = "http://cjlhappiness.xicp.net/BlueStart/setThird.php";
+    public static final String FOURTH_GET  = "http://cjlhappiness.xicp.net/BlueStart/getFourth.php";
+    public static final String FOURTH_SET  = "http://cjlhappiness.xicp.net/BlueStart/setFourth.php";
+    public static final String FIFTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getFifth.php";
+    public static final String FIFTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setFifth.php";
+    public static final String SIXTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getSixth.php";
+    public static final String SIXTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setSixth.php";
+    public static final String SEVENTH_GET = "http://cjlhappiness.xicp.net/BlueStart/getSeventh.php";
+    public static final String SEVENTH_SET = "http://cjlhappiness.xicp.net/BlueStart/setSeventh.php";
+    public static final String EIGHTH_GET  = "http://cjlhappiness.xicp.net/BlueStart/getEighth.php";
+    public static final String EIGHTH_SET  = "http://cjlhappiness.xicp.net/BlueStart/setEighth.php";
+    public static final String NINTH_GET   = "http://cjlhappiness.xicp.net/BlueStart/getNinth.php";
+    public static final String NINTH_SET   = "http://cjlhappiness.xicp.net/BlueStart/setNinth.php";
 
     public static final String LOAD        = "http://cjlhappiness.xicp.net/BlueStart/loadUser.php";
 
