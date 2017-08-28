@@ -66,13 +66,7 @@ public class ThirdAdapter extends mAdapter{
         }else {
 
         }
-        if (firstDay == 7){
-            content.setText(String.valueOf(i + 1));
-        }else if (i >= firstDay) {
-            content.setText(String.valueOf(i - firstDay + 1));
-        }else {
-            view.setVisibility(View.INVISIBLE);
-        }
+        content.setText(day);
         return view;
     }
 }

@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
         editText.addTextChangedListener(this);
-
+        switchButtonEnabled(false);
     }
 
     private void initData(){
@@ -174,11 +175,11 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                     adapter.updateSingleRow(gridView, position);
                     isLongClick = false;
                 }
-            }else {
-                fillItem();
+                return;
             }
         }catch (NullPointerException e){
         }
+        fillItem();
         switchButtonEnabled(true);
     }
 
