@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +35,8 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private TextView textView;
     private EditText editText;
     private Button previousBtn, nextBtn;
-    private ThirdAdapter adapter;
-    private boolean isLongClick;
+    private ThirdAdapter fullAdapter, nullAdapter;
+    private boolean isLongClick, isFlowerChange;
     private int selectMonth, clickPosition, longClickPosition;
 
     private Handler handler = new Handler(){
@@ -75,8 +74,8 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private void initData(){
         textView.setText(Date.getDateString()[0]);
         data = new ArrayList();
-        adapter = new ThirdAdapter(getActivity(), data);
-        gridView.setAdapter(adapter);
+        fullAdapter = new ThirdAdapter(getActivity(), data);
+        gridView.setAdapter(fullAdapter);
         clickPosition = longClickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         selectMonth = 0;
         LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
@@ -86,31 +85,41 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (data.size() != 0) {
             data.clear();
         }
-        if (Date.getFirstDayInMonth() != 7){
-            for (int i = 0 ; i< Date.getFirstDayInMonth(); i++){
+
+        int firstDay = Date.getFirstDayInMonth();
+
+        if (firstDay != 7){
+            for (int i = 0 ; i< firstDay; i++){
                 data.add(null);
             }
         }
         data.addAll(list);
         editText.setVisibility(View.VISIBLE);
-        adapter.notifyDataSetChanged();
+        int nowDay = Date.getNowDayInMonth() + firstDay - 1;
+        editText.setText(((ThirdData)data.get(nowDay)).getContent());
+        gridView.setAdapter(fullAdapter);
     }
 
     private void fillItem(){
+        if (nullAdapter == null){
+            nullAdapter = new ThirdAdapter(getActivity(), data, selectMonth);
+        }
         if (data.size() != 0) {
             data.clear();
         }
-        int nullData = Date.getFirstDayInMonth(selectMonth);
-        if (nullData != 7) {
-            for (int i = 0; i < nullData; i++) {
+
+        int firstDay = Date.getFirstDayInMonth(selectMonth);
+
+        if (firstDay != 7) {
+            for (int i = 0; i < firstDay; i++) {
                 data.add(null);
             }
         }
-        for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
+        for (int i = 0; i < firstDay; i++) {
             data.add(null);
         }
-        adapter = new ThirdAdapter(getActivity(), data, selectMonth);
-        gridView.setAdapter(adapter);
+        nullAdapter.setSelectMonth(selectMonth);
+        gridView.setAdapter(nullAdapter);
     }
 
     @Override
@@ -158,6 +167,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     @Override
     public void parseData(Map m) {
         super.parseData(m);
+        switchButtonEnabled(true);
         try {
             if ((int)m.get("code") == 200 && !m.get("content").equals("null")) {
                 Object json = m.get("content");
@@ -172,7 +182,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                     }
                     data.remove(position);
                     data.add(position, Parse.parseThirdJson(json.toString()).get(0));
-                    adapter.updateSingleRow(gridView, position);
+                    fullAdapter.updateSingleRow(gridView, position);
                     isLongClick = false;
                 }
                 return;
@@ -180,7 +190,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         }catch (NullPointerException e){
         }
         fillItem();
-        switchButtonEnabled(true);
     }
 
     public List createParams(int code, ThirdData d){
@@ -189,20 +198,26 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             String[] s = new String[]{"date", Date.getDateString(selectMonth)[1]};
             params.add(s);
         }else {
-            String[] s1 = new String[]{"id", String.valueOf(d.getId())};
-            String[] s2 = new String[]{"userId", String.valueOf(d.getUserId())};
-            String[] s3 = new String[]{"content", editText.getText().toString()};
-            int state = d.getState();
-            if (d.getState() == 0){
-                state = 1;
-            }else {
-                state = -state;
+            String[] s1, s2, s3;
+            s1 = s2 = s3 = null;
+            if (code == OPERATE_CODE[1]){
+                int state = d.getState();
+                if (state == 0){
+                    state = 1;
+                }else {
+                    state = -state;
+                }
+                s1 = new String[]{"id", String.valueOf(d.getId())};
+                s2 = new String[]{"userId", String.valueOf(d.getUserId())};
+                s3 = new String[]{"state", String.valueOf(state)};
+            } else if (code == OPERATE_CODE[2]){
+                s1 = new String[]{"id", String.valueOf(d.getId())};
+                s2 = new String[]{"userId", String.valueOf(d.getUserId())};
+                s3 = new String[]{"content", editText.getText().toString()};
             }
-            String[] s4 = new String[]{"state", String.valueOf(state)};
             params.add(s1);
             params.add(s2);
             params.add(s3);
-            params.add(s4);
         }
         return params;
     }
@@ -226,7 +241,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (d.getContent().equals(s.toString())) {
             return;
         }
-        List params = createParams(OPERATE_CODE[1], (ThirdData) data.get(clickPosition));
-        LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[1]);
+        List params = createParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
+        LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[2]);
     }
 }

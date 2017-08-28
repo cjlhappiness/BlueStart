@@ -33,7 +33,7 @@ public class mFragment extends Fragment{
     public final static int[] ID      = new int[]{0, 1};
     public final static int[] USER_ID = new int[]{950125, 950422};
 
-    public final static int[] OPERATE_CODE = new int[]{0x100, 0x200};
+    public final static int[] OPERATE_CODE = new int[]{0x100, 0x200, 0x300};
 
     public mFragment() {
     }

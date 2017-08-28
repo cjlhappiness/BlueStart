@@ -69,6 +69,7 @@
         android:id="@+id/third_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/third_grid"
         android:visibility="invisible"
         android:hint=""/>
 
