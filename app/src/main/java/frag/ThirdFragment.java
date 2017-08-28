@@ -115,7 +115,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 data.add(null);
             }
         }
-        for (int i = 0; i < firstDay; i++) {
+        for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
             data.add(null);
         }
         nullAdapter.setSelectMonth(selectMonth);
