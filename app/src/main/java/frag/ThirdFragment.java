@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,7 +28,8 @@ import util.Parse;
 
 //第3个Fragment
 public class ThirdFragment extends mFragment implements View.OnClickListener, TextWatcher,
-        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
     private List data;
     private View view;
@@ -36,7 +38,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private EditText editText;
     private Button previousBtn, nextBtn;
     private ThirdAdapter fullAdapter, nullAdapter;
-    private boolean isLongClick, isFlowerChange;
+    private boolean isLongClick;
     private int selectMonth, clickPosition, longClickPosition;
 
     private Handler handler = new Handler(){
@@ -58,16 +60,22 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     }
 
     private void initView(){
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.third_swipe);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        swipeRefreshLayout.setProgressViewOffset(true, 0, 300);
+        swipeRefreshLayout.setOnRefreshListener(this);
         textView = (TextView) view.findViewById(R.id.third_title);
         editText = (EditText) view.findViewById(R.id.third_content);
+        editText.addTextChangedListener(this);
         previousBtn = (Button) view.findViewById(R.id.third_previous);
-        nextBtn = (Button) view.findViewById(R.id.third_next);
-        gridView = (GridView) view.findViewById(R.id.third_grid);
         previousBtn.setOnClickListener(this);
+        nextBtn = (Button) view.findViewById(R.id.third_next);
         nextBtn.setOnClickListener(this);
+        gridView = (GridView) view.findViewById(R.id.third_grid);
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
-        editText.addTextChangedListener(this);
         switchButtonEnabled(false);
     }
 
@@ -118,6 +126,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
             data.add(null);
         }
+        editText.setVisibility(View.INVISIBLE);
         nullAdapter.setSelectMonth(selectMonth);
         gridView.setAdapter(nullAdapter);
     }
@@ -156,7 +165,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 selectMonth ++;
                 break;
         }
-        editText.setVisibility(View.INVISIBLE);
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
         switchButtonEnabled(false);
@@ -185,6 +193,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                     fullAdapter.updateSingleRow(gridView, position);
                     isLongClick = false;
                 }
+                swipeRefreshLayout.setRefreshing(false);
                 return;
             }
         }catch (NullPointerException e){
@@ -247,5 +256,10 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         }
         List params = createParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
         LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[2]);
+    }
+
+    @Override
+    public void onRefresh() {
+        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
     }
 }

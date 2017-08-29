@@ -6,27 +6,20 @@ Fragment类父类
 
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.widget.Toast;
-
-import java.io.IOException;
+import android.support.v4.widget.SwipeRefreshLayout;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
-import pl.droidsonroids.gif.*;
-import util.Parse;
-
-import com.xicp.cjlhappiness.bluestart.R;
 
 public class mFragment extends Fragment{
 
-    public GifDrawable gifDrawable;
     public mFutureTask futureTask;
+
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     public ExecutorService exec = Executors.newFixedThreadPool(5);
 
@@ -50,5 +43,4 @@ public class mFragment extends Fragment{
     public void parseData(Map m) {
         ((mCallBack) getActivity()).isFinish();
     }
-
 }

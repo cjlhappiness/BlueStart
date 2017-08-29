@@ -48,7 +48,7 @@ public class mAdapter extends BaseAdapter{
         if (absListView != null){
             int start = absListView.getFirstVisiblePosition();
             int stop = absListView.getLastVisiblePosition();
-            for (int i = start; i < stop ; i++){
+            for (int i = start; i <= stop ; i++){
                 if (position == i){
                     View view = absListView.getChildAt(i - start);
                     getView(i, view, absListView);
