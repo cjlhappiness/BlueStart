@@ -6,13 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.xicp.cjlhappiness.bluestart.R;
-import pl.droidsonroids.gif.GifImageView;
 
 //第1个Fragment
 public class FirstFragment extends mFragment{
-
-    public boolean isRefresh;
-    private GifImageView gifImageView;
 
     @Nullable
     @Override

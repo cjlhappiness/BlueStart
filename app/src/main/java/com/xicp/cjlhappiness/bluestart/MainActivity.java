@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import frag.EighthFragment;
 import frag.FifthFragment;
 import frag.FirstFragment;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     private long keyBackTime;
     private int currentIndex;
-    private int user_id;
+    private int userId;
 
     private float down;
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        user_id = intent.getIntExtra("id",-1);
+        userId = intent.getIntExtra("id",-1);
 
         //ActionBar的替代品Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

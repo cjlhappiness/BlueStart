@@ -33,6 +33,7 @@ public class mFragment extends Fragment{
     public final static int[] ID      = new int[]{0, 1};
     public final static int[] USER_ID = new int[]{950125, 950422};
 
+    //加载日历，更新小红花，更新留言
     public final static int[] OPERATE_CODE = new int[]{0x100, 0x200, 0x300};
 
     public mFragment() {

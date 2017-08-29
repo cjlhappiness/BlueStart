@@ -238,7 +238,11 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     @Override
     public void afterTextChanged(Editable s) {
         ThirdData d = (ThirdData) data.get(clickPosition);
-        if (d.getContent().equals(s.toString())) {
+        try {
+            if (d.getContent().equals(s.toString())) {
+                return;
+            }
+        }catch (NullPointerException e){
             return;
         }
         List params = createParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
