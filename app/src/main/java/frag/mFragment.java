@@ -33,11 +33,11 @@ public class mFragment extends Fragment{
     }
 
     //请求网络数据
-    public void LoadOrUpdateData(String url, Handler handler, List params, int operateCode){
-        mCallable callable = new mCallable(url, params);
-        futureTask = new mFutureTask(callable, handler, operateCode);
+    public void LoadOrUpdateData(String url, Handler handler, List requestParams, Map callBackParams){
+        mCallable callable = new mCallable(url, requestParams);
+        futureTask = new mFutureTask(callable, handler, callBackParams);
         exec.submit(futureTask);
-        ((mCallBack) getActivity()).isBegin(operateCode);
+        ((mCallBack) getActivity()).isBegin((int) callBackParams.get("operateCode"));
     }
 
     public void parseData(Map m) {

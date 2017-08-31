@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 public class mFutureTask<V> extends FutureTask<V> {
 
     private Handler handler;
-    private int operateCode;
+    private Map callBackParams;
 
     public mFutureTask(@NonNull Callable<V> callable) {
         super(callable);
@@ -25,10 +25,10 @@ public class mFutureTask<V> extends FutureTask<V> {
         super(runnable, result);
     }
 
-    public mFutureTask(@NonNull Callable<V> callable, Handler handler, int operateCode) {
+    public mFutureTask(@NonNull Callable<V> callable, Handler handler, Map callBackParams) {
         super(callable);
         this.handler = handler;
-        this.operateCode = operateCode;
+        this.callBackParams = callBackParams;
     }
 
     @Override
@@ -39,6 +39,7 @@ public class mFutureTask<V> extends FutureTask<V> {
         Bundle bundle = new Bundle();
         try {
             map = (Map) get(5, TimeUnit.MILLISECONDS);
+            map.putAll(callBackParams);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -46,7 +47,6 @@ public class mFutureTask<V> extends FutureTask<V> {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
-        map.put("operateCode", operateCode);
         bundle.putSerializable("map", (Serializable) map);
         message.setData(bundle);
         handler.sendMessage(message);

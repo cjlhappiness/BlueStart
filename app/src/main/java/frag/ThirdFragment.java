@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import adapter.ThirdAdapter;
@@ -38,8 +39,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private EditText editText;
     private Button previousBtn, nextBtn;
     private ThirdAdapter fullAdapter, nullAdapter;
-    private boolean isLongClick;
-    private int selectMonth, clickPosition, longClickPosition;
+    private int selectMonth, clickPosition;
 
     private Handler handler = new Handler(){
         @Override
@@ -84,9 +84,11 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         data = new ArrayList();
         fullAdapter = new ThirdAdapter(getActivity(), data);
         gridView.setAdapter(fullAdapter);
-        clickPosition = longClickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
+        clickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         selectMonth = 0;
-        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
+        List requestParams = createRequestParams(OPERATE_CODE[0], null);
+        Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
+        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
     private void fillItem(List list){
@@ -147,10 +149,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (selectMonth == 0){
-            isLongClick = true;
-            longClickPosition = position;
-            List params = createParams(OPERATE_CODE[1], (ThirdData) data.get(position));
-            LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[1]);
+            List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) data.get(position));
+            Map callBackParams = createCallBackParams(OPERATE_CODE[1], position);
+            LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
         }
         return true;
     }
@@ -168,7 +169,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
         switchButtonEnabled(false);
-        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
+        List requestParams = createRequestParams(OPERATE_CODE[0], null);
+        Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
+        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
 
@@ -182,16 +185,10 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
                     fillItem(Parse.parseThirdJson(json.toString()));
                 }else{
-                    int position;
-                    if (isLongClick){
-                        position = longClickPosition;
-                    }else {
-                        position = clickPosition;
-                    }
+                    int position = (int) m.get("item");
                     data.remove(position);
                     data.add(position, Parse.parseThirdJson(json.toString()).get(0));
                     fullAdapter.updateSingleRow(gridView, position);
-                    isLongClick = false;
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 return;
@@ -201,34 +198,43 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         fillItem();
     }
 
-    public List createParams(int code, ThirdData d){
+    public List createRequestParams(int operateCode, ThirdData d){
         List params = new ArrayList();
-        if (code == OPERATE_CODE[0]){
-            String[] s = new String[]{"date", Date.getDateString(selectMonth)[1]};
-            params.add(s);
-        }else {
-            String[] s1, s2, s3;
-            s1 = s2 = s3 = null;
-            if (code == OPERATE_CODE[1]){
-                int state = d.getState();
-                if (state == 0){
-                    state = 1;
-                }else {
-                    state = -state;
-                }
-                s1 = new String[]{"id", String.valueOf(d.getId())};
-                s2 = new String[]{"userId", String.valueOf(d.getUserId())};
-                s3 = new String[]{"state", String.valueOf(state)};
-            } else if (code == OPERATE_CODE[2]){
-                s1 = new String[]{"id", String.valueOf(d.getId())};
-                s2 = new String[]{"userId", String.valueOf(d.getUserId())};
-                s3 = new String[]{"content", editText.getText().toString()};
-            }
+
+        if (operateCode == OPERATE_CODE[0]){
+            String[] s1 = new String[]{"date", Date.getDateString(selectMonth)[1]};
             params.add(s1);
-            params.add(s2);
-            params.add(s3);
+            return params;
         }
+
+        String[] s1, s2, s3;
+        s3 = null;
+
+        if (operateCode == OPERATE_CODE[1]){
+            int state = d.getState();
+            if (state == 0){
+                state = 1;
+            }else {
+                state = -state;
+            }
+            s3 = new String[]{"state", String.valueOf(state)};
+        } else if (operateCode == OPERATE_CODE[2]){
+            s3 = new String[]{"content", editText.getText().toString()};
+        }
+
+        s1 = new String[]{"id", String.valueOf(d.getId())};
+        s2 = new String[]{"userId", String.valueOf(d.getUserId())};
+        params.add(s1);
+        params.add(s2);
+        params.add(s3);
         return params;
+    }
+
+    public Map createCallBackParams(int operateCode, int selectItem){
+        Map map = new HashMap();
+        map.put("operateCode", operateCode);
+        map.put("selectItem", selectItem);
+        return map;
     }
 
     public void switchButtonEnabled(boolean isSwitch){
@@ -254,12 +260,15 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         }catch (NullPointerException e){
             return;
         }
-        List params = createParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
-        LoadOrUpdateData(Network.THIRD_SET, handler, params, OPERATE_CODE[2]);
+        List requestParams = createRequestParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
+        Map callBackParams = createCallBackParams(OPERATE_CODE[2], clickPosition);
+        LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
     }
 
     @Override
     public void onRefresh() {
-        LoadOrUpdateData(Network.THIRD_GET, handler, createParams(OPERATE_CODE[0], null), OPERATE_CODE[0]);
+        List requestParams = createRequestParams(OPERATE_CODE[0], null);
+        Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
+        LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
     }
 }
