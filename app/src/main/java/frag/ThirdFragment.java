@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,17 +97,21 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             data.clear();
         }
 
-        int firstDay = Date.getFirstDayInMonth();
-
+        int firstDay = Date.getFirstDayInMonth(selectMonth);
         if (firstDay != 7){
             for (int i = 0 ; i< firstDay; i++){
                 data.add(null);
             }
         }
         data.addAll(list);
-        editText.setVisibility(View.VISIBLE);
-        int nowDay = Date.getNowDayInMonth() + firstDay - 1;
-        editText.setText(((ThirdData)data.get(nowDay)).getContent());
+        Log.d("fillItem: ",""+firstDay+"   "+data.size());
+        if (selectMonth == 0) {
+            editText.setVisibility(View.VISIBLE);
+            int nowDay = Date.getNowDayInMonth() + firstDay - 1;
+            editText.setText(((ThirdData) data.get(nowDay)).getContent());
+        } else {
+            fullAdapter.setSelectMonth(selectMonth);
+        }
         gridView.setAdapter(fullAdapter);
     }
 
@@ -151,7 +156,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (selectMonth == 0){
             List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) data.get(position));
             Map callBackParams = createCallBackParams(OPERATE_CODE[1], position);
-            LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
+            LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
         }
         return true;
     }
@@ -178,22 +183,31 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     @Override
     public void parseData(Map m) {
         super.parseData(m);
+        swipeRefreshLayout.setRefreshing(false);
         switchButtonEnabled(true);
         try {
-            if ((int)m.get("code") == 200 && !m.get("content").equals("null")) {
-                Object json = m.get("content");
-                if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
-                    fillItem(Parse.parseThirdJson(json.toString()));
-                }else{
-                    int position = (int) m.get("item");
-                    data.remove(position);
-                    data.add(position, Parse.parseThirdJson(json.toString()).get(0));
-                    fullAdapter.updateSingleRow(gridView, position);
+            if ((int)m.get("code") == 200){
+                Log.d("parseData: ", "1");
+                if (!m.get("content").equals("null")){
+                    Log.d("parseData: ", "2");
+                    Object json = m.get("content");
+                    if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
+                        Log.d("parseData: ", "3");
+                        fillItem(Parse.parseThirdJson(json.toString()));
+                    }else{
+                        Log.d("parseData: ", "4");
+                        int position = (int) m.get("selectItem");
+                        data.remove(position);
+                        data.add(position, Parse.parseThirdJson(json.toString()).get(0));
+                        fullAdapter.updateSingleRow(gridView, position);
+                    }
+                    return;
                 }
-                swipeRefreshLayout.setRefreshing(false);
-                return;
+            } else {
+                Log.d("parseData: ", "5");
             }
         }catch (NullPointerException e){
+            Log.d("parseData: ", "6");
         }
         fillItem();
     }
@@ -218,7 +232,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 state = -state;
             }
             s3 = new String[]{"state", String.valueOf(state)};
-        } else if (operateCode == OPERATE_CODE[2]){
+        } else {
             s3 = new String[]{"content", editText.getText().toString()};
         }
 
@@ -269,6 +283,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     public void onRefresh() {
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
-        LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
+        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 }
