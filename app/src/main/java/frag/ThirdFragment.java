@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import adapter.ThirdAdapter;
 import data.ThirdData;
+import thread.mCallBack;
 import util.Date;
 import util.Network;
 import util.Parse;
@@ -41,6 +44,13 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private Button previousBtn, nextBtn;
     private ThirdAdapter fullAdapter, nullAdapter;
     private int selectMonth, clickPosition;
+    private int editCount;
+    private boolean isButtonClick;
+
+    private static final String[] CODE_MESSAGE = new String[]{
+            "小红花已经成功加载了哟潘潘老婆~",
+            "啊哦网络似乎开小差了潘潘老婆再试试~",
+            "潘潘老婆小红花状态已经成功更新了哟~"};
 
     private Handler handler = new Handler(){
         @Override
@@ -65,10 +75,12 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light, android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        swipeRefreshLayout.setProgressViewOffset(true, 0, 300);
+        swipeRefreshLayout.setProgressViewEndTarget(true, 100);
+        swipeRefreshLayout.setSize(1);
         swipeRefreshLayout.setOnRefreshListener(this);
         textView = (TextView) view.findViewById(R.id.third_title);
         editText = (EditText) view.findViewById(R.id.third_content);
+        editText.setOnClickListener(this);
         editText.addTextChangedListener(this);
         previousBtn = (Button) view.findViewById(R.id.third_previous);
         previousBtn.setOnClickListener(this);
@@ -103,15 +115,17 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 data.add(null);
             }
         }
+
         data.addAll(list);
-        Log.d("fillItem: ",""+firstDay+"   "+data.size());
+
+        editText.setVisibility(View.VISIBLE);
+
         if (selectMonth == 0) {
-            editText.setVisibility(View.VISIBLE);
             int nowDay = Date.getNowDayInMonth() + firstDay - 1;
             editText.setText(((ThirdData) data.get(nowDay)).getContent());
         } else {
-            fullAdapter.setSelectMonth(selectMonth);
         }
+        fullAdapter.setSelectMonth(selectMonth);
         gridView.setAdapter(fullAdapter);
     }
 
@@ -143,6 +157,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (position < Date.getFirstDayInMonth(selectMonth)){
             return;
         }
+        isButtonClick = false;
         parent.getChildAt(clickPosition).setBackgroundColor(Color.alpha(0));
         view.setBackgroundColor(Color.argb(75, 255, 0, 0));
         clickPosition = position;
@@ -153,7 +168,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (selectMonth == 0){
+        if (data.get(position) != null){
             List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) data.get(position));
             Map callBackParams = createCallBackParams(OPERATE_CODE[1], position);
             LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
@@ -170,9 +185,14 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             case R.id.third_next:
                 selectMonth ++;
                 break;
+            case R.id.third_content:
+                callBack.isEdit();
+                return;
         }
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
+        isButtonClick = true;
+        editText.setText(null);
         switchButtonEnabled(false);
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
@@ -186,29 +206,30 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         swipeRefreshLayout.setRefreshing(false);
         switchButtonEnabled(true);
         try {
-            if ((int)m.get("code") == 200){
-                Log.d("parseData: ", "1");
-                if (!m.get("content").equals("null")){
-                    Log.d("parseData: ", "2");
-                    Object json = m.get("content");
+            if ((int)m.get("responseCode") == 200){
+                if (!m.get("responseContent").equals("null")){
+                    Object json = m.get("responseContent");
                     if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
-                        Log.d("parseData: ", "3");
                         fillItem(Parse.parseThirdJson(json.toString()));
+                        Toast.makeText(getActivity(), CODE_MESSAGE[0], Toast.LENGTH_SHORT).show();
                     }else{
-                        Log.d("parseData: ", "4");
                         int position = (int) m.get("selectItem");
                         data.remove(position);
                         data.add(position, Parse.parseThirdJson(json.toString()).get(0));
                         fullAdapter.updateSingleRow(gridView, position);
+                        if ((int)m.get("operateCode") == OPERATE_CODE[2]){
+                            editCount --;
+                            if (editCount != 0){return;}
+                        }
+                        Toast.makeText(getActivity(), CODE_MESSAGE[2], Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
-            } else {
-                Log.d("parseData: ", "5");
             }
         }catch (NullPointerException e){
-            Log.d("parseData: ", "6");
         }
+
+        Toast.makeText(getActivity(), CODE_MESSAGE[1], Toast.LENGTH_SHORT).show();
         fillItem();
     }
 
@@ -222,7 +243,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         }
 
         String[] s1, s2, s3;
-        s3 = null;
 
         if (operateCode == OPERATE_CODE[1]){
             int state = d.getState();
@@ -266,6 +286,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
 
     @Override
     public void afterTextChanged(Editable s) {
+        if (isButtonClick){return;}
         ThirdData d = (ThirdData) data.get(clickPosition);
         try {
             if (d.getContent().equals(s.toString())) {
@@ -274,15 +295,18 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         }catch (NullPointerException e){
             return;
         }
-        List requestParams = createRequestParams(OPERATE_CODE[2], (ThirdData) data.get(clickPosition));
+        editCount ++;
+        List requestParams = createRequestParams(OPERATE_CODE[2], d);
         Map callBackParams = createCallBackParams(OPERATE_CODE[2], clickPosition);
         LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
     }
 
     @Override
     public void onRefresh() {
+        clickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
         LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
+
 }

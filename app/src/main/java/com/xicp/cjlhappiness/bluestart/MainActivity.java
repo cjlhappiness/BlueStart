@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity
 
     private float down;
 
+    private boolean isEdit;
+
     private static final int THREAD_POOL = 5;
     private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新", "退  出"};
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth",
@@ -127,8 +129,12 @@ public class MainActivity extends AppCompatActivity
     //Back键的按下事件
     @Override
     public void onBackPressed() {
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (isEdit){
+            isEdit = false;
+            return;
         } else{
             if (backStackList.size() > 1){
                 int position = backStackList.get(backStackList.size() - 2);
@@ -302,6 +308,11 @@ public class MainActivity extends AppCompatActivity
             gifImageView.setVisibility(View.INVISIBLE);
             gifDrawable.stop();
         }
+    }
+
+    @Override
+    public void isEdit() {
+        isEdit = true;
     }
 
 }
