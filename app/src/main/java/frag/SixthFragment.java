@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.xicp.cjlhappiness.bluestart.R;
 
-//第6个Fragment
+//第6个Fragment,游戏
 public class SixthFragment extends mFragment{
 
     @Nullable

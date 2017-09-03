@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -24,8 +22,6 @@ public class mFragment extends Fragment{
     public mFutureTask futureTask;
 
     public SwipeRefreshLayout swipeRefreshLayout;
-
-    public ExecutorService exec = Executors.newFixedThreadPool(5);
 
     public mCallBack callBack;
 
@@ -51,11 +47,11 @@ public class mFragment extends Fragment{
     public void LoadOrUpdateData(String url, Handler handler, List requestParams, Map callBackParams){
         mCallable callable = new mCallable(url, requestParams);
         futureTask = new mFutureTask(callable, handler, callBackParams);
-        exec.submit(futureTask);
-        callBack.isBegin((int) callBackParams.get("operateCode"));
+        callBack.getExecutorService().submit(futureTask);
+        callBack.isRequestBegin((int) callBackParams.get("operateCode"));
     }
 
     public void parseData(Map m) {
-        ((mCallBack) getActivity()).isFinish();
+        ((mCallBack) getActivity()).isRequestFinish();
     }
 }

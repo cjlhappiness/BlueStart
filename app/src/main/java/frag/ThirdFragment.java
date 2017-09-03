@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,12 +23,11 @@ import java.util.List;
 import java.util.Map;
 import adapter.ThirdAdapter;
 import data.ThirdData;
-import thread.mCallBack;
 import util.Date;
 import util.Network;
 import util.Parse;
 
-//第3个Fragment
+//第3个Fragment，小红花
 public class ThirdFragment extends mFragment implements View.OnClickListener, TextWatcher,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
         SwipeRefreshLayout.OnRefreshListener{
@@ -47,10 +43,11 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private int editCount;
     private boolean isButtonClick;
 
-    private static final String[] CODE_MESSAGE = new String[]{
+    private static final String[] THIRD_MESSAGE = new String[]{
             "小红花已经成功加载了哟潘潘老婆~",
             "啊哦网络似乎开小差了潘潘老婆再试试~",
-            "潘潘老婆小红花状态已经成功更新了哟~"};
+            "潘潘老婆小红花状态已经成功更新了哟~",
+            "没有这个月的小红花数据哟潘潘老婆~"};
 
     private Handler handler = new Handler(){
         @Override
@@ -186,7 +183,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                 selectMonth ++;
                 break;
             case R.id.third_content:
-                callBack.isEdit();
+                callBack.isUpdateFinish(true, null);
                 return;
         }
         String date = Date.getDateString(selectMonth)[0];
@@ -199,7 +196,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
-
     @Override
     public void parseData(Map m) {
         super.parseData(m);
@@ -211,7 +207,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                     Object json = m.get("responseContent");
                     if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
                         fillItem(Parse.parseThirdJson(json.toString()));
-                        Toast.makeText(getActivity(), CODE_MESSAGE[0], Toast.LENGTH_SHORT).show();
+                        callBack.showMessage(THIRD_MESSAGE[0]);
                     }else{
                         int position = (int) m.get("selectItem");
                         data.remove(position);
@@ -220,16 +216,21 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
                         if ((int)m.get("operateCode") == OPERATE_CODE[2]){
                             editCount --;
                             if (editCount != 0){return;}
+                            callBack.isUpdateFinish(false, THIRD_MESSAGE[2]);
+                        }else {
+                            callBack.showMessage(THIRD_MESSAGE[2]);
                         }
-                        Toast.makeText(getActivity(), CODE_MESSAGE[2], Toast.LENGTH_SHORT).show();
+
                     }
                     return;
+                } else {
+                    callBack.showMessage(THIRD_MESSAGE[3]);
                 }
+            } else {
+                callBack.showMessage(THIRD_MESSAGE[1]);
             }
         }catch (NullPointerException e){
         }
-
-        Toast.makeText(getActivity(), CODE_MESSAGE[1], Toast.LENGTH_SHORT).show();
         fillItem();
     }
 

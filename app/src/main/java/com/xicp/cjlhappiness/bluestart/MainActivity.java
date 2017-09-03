@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isEdit;
 
+    private String tempMessage;
+
     private static final int THREAD_POOL = 5;
     private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新", "退  出"};
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth",
@@ -132,8 +134,9 @@ public class MainActivity extends AppCompatActivity
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (isEdit){
-            isEdit = false;
+        } else if (!isEdit){
+            isEdit = true;
+            showMessage(tempMessage);
             return;
         } else{
             if (backStackList.size() > 1){
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity
             }else {
                 if (SystemClock.elapsedRealtime() - keyBackTime > 1500) {
                     keyBackTime = SystemClock.elapsedRealtime();
-                    Toast.makeText(this, "老婆再按一次你就要离开我啦！", Toast.LENGTH_SHORT).show();
+                    showMessage("老婆再按一次你就要离开我啦！");
                 } else {
                     finish();
                 }
@@ -284,10 +287,6 @@ public class MainActivity extends AppCompatActivity
         return super.dispatchTouchEvent(ev);
     }
 
-    public ExecutorService getEs(){
-        return es;
-    }
-
     public static void startMainActivity(Activity activity, int id){
         Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("id",id);
@@ -295,7 +294,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void isBegin(int operateCode) {
+    public ExecutorService getExecutorService() {
+        return es;
+    }
+
+    @Override
+    public void isRequestBegin(int operateCode) {
         if (operateCode == mFragment.OPERATE_CODE[0]) {
             gifImageView.setVisibility(View.VISIBLE);
             gifDrawable.start();
@@ -303,7 +307,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void isFinish() {
+    public void isRequestFinish() {
         if (gifImageView.getVisibility() == View.VISIBLE){
             gifImageView.setVisibility(View.INVISIBLE);
             gifDrawable.stop();
@@ -311,8 +315,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void isEdit() {
-        isEdit = true;
+    public void isUpdateFinish(boolean isEdit, String message) {
+        this.isEdit = isEdit;
+        this.tempMessage = message;
+    }
+
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
 }
