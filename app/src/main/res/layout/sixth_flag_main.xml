@@ -11,60 +11,114 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/sixth_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="25dp"
             android:gravity="center"
-            android:text="我拥有的么么哒："
-            android:textSize="35sp" />
+            android:layout_marginTop="20dp"
+            android:text="我拥有的么么哒：" />
+        <TextView
+            android:id="@+id/sixth_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textColor="#c00f"
+            android:text="0"
+            android:textSize="45sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="15dp">
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginRight="15dp">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/game_one"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:textColor="#500f"
+                    android:text="14"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/game_two"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:textColor="#700f"
+                    android:text="30"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginLeft="15dp">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/game_three"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:textColor="#900f"
+                    android:text="80"/>
+            </LinearLayout>
         </LinearLayout>
         <GridView
-            android:id="@+id/third_grid"
+            android:id="@+id/sixth_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:numColumns="3"/>
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:numColumns="3" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
             <Button
+                android:id="@+id/sixth_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="开始"/>
+                android:enabled="false"
+                android:text="开始"
+                android:background="@drawable/sixth_button_shape"/>
             <Button
+                android:id="@+id/sixth_stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:text="结束" />
+                android:text="结束"
+                android:background="@drawable/sixth_button_shape"/>
         </LinearLayout>
+        <TextView
+            android:id="@+id/sixth_fundamental"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:gravity="center" />
+
     </LinearLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import data.ThirdData;
 import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
@@ -26,11 +28,9 @@ public class mFragment extends Fragment{
     public mCallBack callBack;
 
     public final static int[] ID      = new int[]{0, 1};
+    public final static int[] LOAD_CODE = new int[]{1, -1};
     public final static int[] USER_ID = new int[]{950125, 950422};
-
-    //加载日历，更新小红花，更新留言
-    public final static int[] OPERATE_CODE = new int[]{0x100, 0x200, 0x300};
-
+    public final static int[] OPERATE_CODE = new int[]{0x100};
     public mFragment() {
 
     }
@@ -44,7 +44,7 @@ public class mFragment extends Fragment{
     }
 
     //请求网络数据
-    public void LoadOrUpdateData(String url, Handler handler, List requestParams, Map callBackParams){
+    public void loadOrUpdateData(String url, Handler handler, List requestParams, Map callBackParams){
         mCallable callable = new mCallable(url, requestParams);
         futureTask = new mFutureTask(callable, handler, callBackParams);
         callBack.getExecutorService().submit(futureTask);
@@ -54,4 +54,13 @@ public class mFragment extends Fragment{
     public void parseData(Map m) {
         ((mCallBack) getActivity()).isRequestFinish();
     }
+
+    public void initView(){
+
+    }
+
+    public void initData(){
+
+    }
+
 }

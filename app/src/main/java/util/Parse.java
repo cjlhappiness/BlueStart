@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import data.FirstData;
+import data.SixthData;
 import data.ThirdData;
 import data.UserData;
 
@@ -46,6 +47,22 @@ public class Parse {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static SixthData parseSixthJson(String json){
+        SixthData data = null;
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            int id = jsonObject.getInt("id");
+            int userId = jsonObject.getInt("userId");
+            int point = jsonObject.getInt("point");
+            int freeCount = jsonObject.getInt("freeCount");
+            data = new SixthData(id, userId, point, freeCount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
 }

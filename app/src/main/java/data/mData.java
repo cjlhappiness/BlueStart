@@ -2,8 +2,8 @@ package data;
 
 public class mData {
 
-    private int id;
-    private int userId;
+    public int id;
+    public int userId;
 
     public mData(int id, int userId){
         this.id = id;

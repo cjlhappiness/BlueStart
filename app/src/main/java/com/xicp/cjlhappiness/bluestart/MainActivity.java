@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
 
     private float down;
 
-    private boolean isEdit;
+    private boolean isEdit = true;
 
     private String tempMessage;
 

@@ -54,7 +54,7 @@ public class ThirdAdapter extends mAdapter{
 
         ImageView background = (ImageView) view.findViewById(R.id.third_flag_item_background);
         int state = thirdData.getState();
-        if (Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1 == i && selectMonth == 0){
+        if (Date.getNowDayInMonth() + firstDay - 1 == i && selectMonth == 0){
             content.setTextColor(Color.RED);
             view.setBackgroundColor(Color.argb(75, 255, 0, 0));
         }

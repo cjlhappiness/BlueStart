@@ -4,6 +4,8 @@ package thread;
 网络请求任务类Callable
 */
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
@@ -57,9 +59,11 @@ public class mCallable implements Callable{
                 m.put("responseContent", s);
             }
         } catch (SocketTimeoutException e){
+
         } catch (IOException e) {
 
         }
+
         return m;
     }
 

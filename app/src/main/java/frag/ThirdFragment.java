@@ -43,6 +43,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     private int editCount;
     private boolean isButtonClick;
 
+    //加载日历，更新小红花，更新留言
+    private final static int[] OPERATE_CODE = new int[]{0x100, 0x200, 0x300};
+
     private static final String[] THIRD_MESSAGE = new String[]{
             "小红花已经成功加载了哟潘潘老婆~",
             "啊哦网络似乎开小差了潘潘老婆再试试~",
@@ -67,7 +70,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         return view;
     }
 
-    private void initView(){
+    @Override
+    public void initView(){
+        super.initView();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.third_swipe);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light, android.R.color.holo_orange_light,
@@ -89,7 +94,9 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         switchButtonEnabled(false);
     }
 
-    private void initData(){
+    @Override
+    public void initData(){
+        super.initData();
         textView.setText(Date.getDateString()[0]);
         data = new ArrayList();
         fullAdapter = new ThirdAdapter(getActivity(), data);
@@ -98,7 +105,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         selectMonth = 0;
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
-        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
+        loadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
     private void fillItem(List list){
@@ -168,7 +175,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (data.get(position) != null){
             List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) data.get(position));
             Map callBackParams = createCallBackParams(OPERATE_CODE[1], position);
-            LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
+            loadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
         }
         return true;
     }
@@ -193,7 +200,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         switchButtonEnabled(false);
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
-        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
+        loadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
     @Override
@@ -299,7 +306,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         editCount ++;
         List requestParams = createRequestParams(OPERATE_CODE[2], d);
         Map callBackParams = createCallBackParams(OPERATE_CODE[2], clickPosition);
-        LoadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
+        loadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
     }
 
     @Override
@@ -307,7 +314,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         clickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
-        LoadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
+        loadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);
     }
 
 }
