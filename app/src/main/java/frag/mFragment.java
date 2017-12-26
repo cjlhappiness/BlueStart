@@ -6,6 +6,7 @@ Fragment类父类
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,9 +29,17 @@ public class mFragment extends Fragment{
     public mCallBack callBack;
 
     public final static int[] ID      = new int[]{0, 1};
-    public final static int[] LOAD_CODE = new int[]{1, -1};
-    public final static int[] USER_ID = new int[]{950125, 950422};
+    public final static int[] USER_ID = new int[]{950422};
     public final static int[] OPERATE_CODE = new int[]{0x100};
+
+    public Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            parseData((Map) msg.getData().getSerializable("map"));
+        }
+    };
+
     public mFragment() {
 
     }
@@ -56,6 +65,10 @@ public class mFragment extends Fragment{
     }
 
     public void initView(){
+
+    }
+
+    public void initGame(){
 
     }
 

@@ -4,7 +4,7 @@ public class SixthItemData {
 
     private int location;
     private int imageResource;
-    private boolean isClick;
+    private boolean clickable = true;
 
     public int getLocation() {
         return location;
@@ -22,11 +22,11 @@ public class SixthItemData {
         this.imageResource = imageResource;
     }
 
-    public boolean isClick() {
-        return isClick;
+    public boolean isClickable() {
+        return clickable;
     }
 
-    public void setClick(boolean click) {
-        isClick = click;
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 }

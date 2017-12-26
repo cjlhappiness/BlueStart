@@ -27,46 +27,56 @@ public class ThirdAdapter extends mAdapter{
 
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        View view;
+        ThirdHolder holder;
         ThirdData thirdData = (ThirdData)data.get(i);
-        if (convertView != null){
-            view = convertView;
+        if (convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.third_fiag_item, null);
+            holder = new ThirdHolder();
+            holder.content = (TextView) convertView.findViewById(R.id.third_flag_item_content);
+            convertView.setTag(holder);
         }else {
-            view = LayoutInflater.from(context).inflate(R.layout.third_fiag_item, null);
+            holder = (ThirdHolder) convertView.getTag();
         }
 
         int firstDay = Date.getFirstDayInMonth(selectMonth);
 
-        TextView content = (TextView) view.findViewById(R.id.third_flag_item_content);
-
         if (i < firstDay && firstDay != 7) {
-            view.setVisibility(View.INVISIBLE);
-            return view;
+            convertView.setVisibility(View.INVISIBLE);
+            return convertView;
         }
 
         if (firstDay == 7){firstDay = 0;}
 
-        content.setText(String.valueOf(i - firstDay + 1));
+        holder.content.setText(String.valueOf(i - firstDay + 1));
+
+        if (Date.getNowDayInMonth() + firstDay - 1 == i && selectMonth == 0){
+            holder.content.setTextColor(Color.RED);
+            convertView.setBackgroundColor(Color.argb(75, 255, 0, 0));
+        }
 
         if (data.get(i) == null){
-            return view;
+            return convertView;
         }
 
-        ImageView background = (ImageView) view.findViewById(R.id.third_flag_item_background);
+        ImageView background = (ImageView) convertView.findViewById(R.id.third_flag_item_background);
         int state = thirdData.getState();
-        if (Date.getNowDayInMonth() + firstDay - 1 == i && selectMonth == 0){
-            content.setTextColor(Color.RED);
-            view.setBackgroundColor(Color.argb(75, 255, 0, 0));
-        }
+
         if (state == 1){
             background.setImageResource(R.mipmap.flower_good);
         }else if (state == -1){
             background.setImageResource(R.mipmap.flower_bad);
         }
-        return view;
+        return convertView;
     }
 
     public void setSelectMonth(int selectMonth){
         this.selectMonth = selectMonth;
     }
+
+    class ThirdHolder {
+        TextView content;
+    }
+
 }
+
+

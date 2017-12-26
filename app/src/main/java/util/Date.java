@@ -56,19 +56,38 @@ public class Date {
     }
 
     //获得当前系统年份
-    public static int getNowYear(){
+    public static int getYear(){
         int year;
         Calendar c = getCalendar();
         year = c.get(Calendar.YEAR);
         return year;
     }
 
+    //获得指定年份
+    public static int getYear(int yearLength){
+        int year;
+        Calendar c = getCalendar();
+        c.add(Calendar.YEAR, yearLength);
+        year = c.get(Calendar.YEAR);
+        return year;
+    }
+
     //获得当前系统中当前月份
-    public static int getNowMonth(){
+    public static int getMonth(){
         int month;
         Calendar c = getCalendar();
         month = c.get(Calendar.MONTH) + 1;
-        return  month;
+        return month;
+    }
+
+    //获得指定月份
+    public static int getMonth(int monthLength){
+        int month;
+        Calendar c = getCalendar();
+        c.add(Calendar.MONTH, monthLength);
+        month = c.get(Calendar.MONTH) + 1;
+        return month;
+
     }
 
     //获得当前系统中现在是周几
@@ -112,6 +131,15 @@ public class Date {
     public static int getNowDayInMonth(){
         int day;
         Calendar c = getCalendar();
+        day = c.get(Calendar.DATE);
+        return day;
+    }
+
+    //获得指定月份中当前日期
+    public static int getNowDayInMonth(int monthLength){
+        int day;
+        Calendar c = getCalendar();
+        c.add(Calendar.MONTH, monthLength);
         day = c.get(Calendar.DATE);
         return day;
     }

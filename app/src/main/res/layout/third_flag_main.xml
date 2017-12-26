@@ -71,11 +71,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:numColumns="7"/>
-            <EditText
-                android:id="@+id/third_content"
+            <LinearLayout
+                android:id="@+id/third_submit_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"/>
+                android:orientation="horizontal"
+                android:visibility="gone">
+                <EditText
+                    android:id="@+id/third_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/third_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/third_submit"
+                    android:text="@string/third_submit"/>
+            </LinearLayout>
+
         </LinearLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

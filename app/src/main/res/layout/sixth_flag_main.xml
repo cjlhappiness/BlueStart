@@ -37,17 +37,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginRight="15dp">
-                <ImageView
+                <div.CircleImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:scaleType="fitCenter"
                     android:src="@mipmap/game_one"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
                     android:textColor="#500f"
-                    android:text="14"/>
+                    android:text="14" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -55,34 +54,32 @@
                 android:gravity="center"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp">
-                <ImageView
+                <div.CircleImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/game_two"/>
+                    android:src="@mipmap/game_two" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
                     android:textColor="#700f"
-                    android:text="30"/>
+                    android:text="30" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginLeft="15dp">
-                <ImageView
+                <div.CircleImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/game_three"/>
+                    android:src="@mipmap/game_three" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
                     android:textColor="#900f"
-                    android:text="80"/>
+                    android:text="80" />
             </LinearLayout>
         </LinearLayout>
         <GridView
@@ -92,26 +89,14 @@
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
             android:numColumns="3" />
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/sixth_start"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <Button
-                android:id="@+id/sixth_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="开始"
-                android:background="@drawable/sixth_button_shape"/>
-            <Button
-                android:id="@+id/sixth_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="结束"
-                android:background="@drawable/sixth_button_shape"/>
-        </LinearLayout>
+            android:enabled="false"
+            android:text="开始"
+            android:layout_gravity="center"
+            android:background="@drawable/sixth_button_shape" />
         <TextView
             android:id="@+id/sixth_fundamental"
             android:layout_width="match_parent"

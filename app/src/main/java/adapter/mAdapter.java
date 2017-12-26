@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 import java.util.List;
 
 public class mAdapter extends BaseAdapter{
@@ -40,7 +38,7 @@ public class mAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        return convertView;
     }
 
     //刷新某一条数据
@@ -57,12 +55,5 @@ public class mAdapter extends BaseAdapter{
             }
         }
     }
-
-class ViewHolder{
-    ImageView img;
-    TextView time;
-    TextView title;
-    TextView content;
-}
 
 }

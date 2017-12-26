@@ -59,11 +59,10 @@ public class mCallable implements Callable{
                 m.put("responseContent", s);
             }
         } catch (SocketTimeoutException e){
-
+            m.put("responseCode", 408);
         } catch (IOException e) {
-
+            m.put("responseCode", 999);
         }
-
         return m;
     }
 

@@ -6,8 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
@@ -28,20 +28,20 @@ import util.Network;
 import util.Parse;
 
 //第3个Fragment，小红花
-public class ThirdFragment extends mFragment implements View.OnClickListener, TextWatcher,
+public class ThirdFragment extends mFragment implements View.OnClickListener,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
         SwipeRefreshLayout.OnRefreshListener{
 
-    private List data;
+    private List dtData;
     private View view;
     private GridView gridView;
     private TextView textView;
     private EditText editText;
+    private Button submitBtn;
     private Button previousBtn, nextBtn;
+    private LinearLayout submitLayout;
     private ThirdAdapter fullAdapter, nullAdapter;
-    private int selectMonth, clickPosition;
-    private int editCount;
-    private boolean isButtonClick;
+    private int selectMonth, selectPosition;
 
     //加载日历，更新小红花，更新留言
     private final static int[] OPERATE_CODE = new int[]{0x100, 0x200, 0x300};
@@ -50,6 +50,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             "小红花已经成功加载了哟潘潘老婆~",
             "啊哦网络似乎开小差了潘潘老婆再试试~",
             "潘潘老婆小红花状态已经成功更新了哟~",
+            "潘潘老婆留言状态已经成功更新了哟~",
             "没有这个月的小红花数据哟潘潘老婆~"};
 
     private Handler handler = new Handler(){
@@ -82,15 +83,16 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         swipeRefreshLayout.setOnRefreshListener(this);
         textView = (TextView) view.findViewById(R.id.third_title);
         editText = (EditText) view.findViewById(R.id.third_content);
-        editText.setOnClickListener(this);
-        editText.addTextChangedListener(this);
         previousBtn = (Button) view.findViewById(R.id.third_previous);
         previousBtn.setOnClickListener(this);
         nextBtn = (Button) view.findViewById(R.id.third_next);
         nextBtn.setOnClickListener(this);
+        submitBtn = (Button) view.findViewById(R.id.third_submit);
+        submitBtn.setOnClickListener(this);
         gridView = (GridView) view.findViewById(R.id.third_grid);
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
+        submitLayout = (LinearLayout) view.findViewById(R.id.third_submit_layout);
         switchButtonEnabled(false);
     }
 
@@ -98,10 +100,10 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     public void initData(){
         super.initData();
         textView.setText(Date.getDateString()[0]);
-        data = new ArrayList();
-        fullAdapter = new ThirdAdapter(getActivity(), data);
+        dtData = new ArrayList();
+        fullAdapter = new ThirdAdapter(getActivity(), dtData);
         gridView.setAdapter(fullAdapter);
-        clickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
+        selectPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         selectMonth = 0;
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
@@ -109,49 +111,54 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     }
 
     private void fillItem(List list){
-        if (data.size() != 0) {
-            data.clear();
+        if (dtData.size() != 0) {
+            dtData.clear();
         }
 
         int firstDay = Date.getFirstDayInMonth(selectMonth);
         if (firstDay != 7){
             for (int i = 0 ; i< firstDay; i++){
-                data.add(null);
+                dtData.add(null);
             }
         }
 
-        data.addAll(list);
+        dtData.addAll(list);
 
-        editText.setVisibility(View.VISIBLE);
+        try {
+            if (selectMonth == 0) {
+                int nowDay = Date.getNowDayInMonth() + firstDay - 1;
+                editText.setText(((ThirdData) dtData.get(nowDay)).getContent());
+            } else {
+                int nowDay = firstDay - 1;
+                editText.setText(((ThirdData) dtData.get(nowDay)).getContent());
+            }
+        } catch (NullPointerException e){
 
-        if (selectMonth == 0) {
-            int nowDay = Date.getNowDayInMonth() + firstDay - 1;
-            editText.setText(((ThirdData) data.get(nowDay)).getContent());
-        } else {
         }
+
         fullAdapter.setSelectMonth(selectMonth);
         gridView.setAdapter(fullAdapter);
+        fullAdapter.notifyDataSetChanged();
     }
 
     private void fillItem(){
         if (nullAdapter == null){
-            nullAdapter = new ThirdAdapter(getActivity(), data, selectMonth);
+            nullAdapter = new ThirdAdapter(getActivity(), dtData, selectMonth);
         }
-        if (data.size() != 0) {
-            data.clear();
+        if (dtData.size() != 0) {
+            dtData.clear();
         }
 
         int firstDay = Date.getFirstDayInMonth(selectMonth);
 
         if (firstDay != 7) {
             for (int i = 0; i < firstDay; i++) {
-                data.add(null);
+                dtData.add(null);
             }
         }
         for (int i = 0; i < Date.getDayCountInMonth(selectMonth); i++) {
-            data.add(null);
+            dtData.add(null);
         }
-        editText.setVisibility(View.INVISIBLE);
         nullAdapter.setSelectMonth(selectMonth);
         gridView.setAdapter(nullAdapter);
     }
@@ -161,19 +168,18 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
         if (position < Date.getFirstDayInMonth(selectMonth)){
             return;
         }
-        isButtonClick = false;
-        parent.getChildAt(clickPosition).setBackgroundColor(Color.alpha(0));
+        parent.getChildAt(selectPosition).setBackgroundColor(Color.alpha(0));
         view.setBackgroundColor(Color.argb(75, 255, 0, 0));
-        clickPosition = position;
-        if (data.get(position) != null){
-            editText.setText(((ThirdData)data.get(position)).getContent());
+        selectPosition = position;
+        if (dtData.get(position) != null){
+            editText.setText(((ThirdData)dtData.get(position)).getContent());
         }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (data.get(position) != null){
-            List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) data.get(position));
+        if (dtData.get(position) != null){
+            List requestParams = createRequestParams(OPERATE_CODE[1], (ThirdData) dtData.get(position));
             Map callBackParams = createCallBackParams(OPERATE_CODE[1], position);
             loadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
         }
@@ -182,6 +188,11 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.third_submit) {
+            submitButton(selectPosition);
+            editText.setFocusable(false);
+            return;
+        }
         switch (v.getId()){
             case R.id.third_previous:
                 selectMonth --;
@@ -189,13 +200,13 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             case R.id.third_next:
                 selectMonth ++;
                 break;
-            case R.id.third_content:
-                callBack.isUpdateFinish(true, null);
-                return;
+        }
+
+        if (submitLayout.getVisibility() == View.VISIBLE) {
+            submitLayout.setVisibility(View.GONE);
         }
         String date = Date.getDateString(selectMonth)[0];
         textView.setText(date);
-        isButtonClick = true;
         editText.setText(null);
         switchButtonEnabled(false);
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
@@ -206,39 +217,51 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
     @Override
     public void parseData(Map m) {
         super.parseData(m);
+
         swipeRefreshLayout.setRefreshing(false);
         switchButtonEnabled(true);
-        try {
-            if ((int)m.get("responseCode") == 200){
-                if (!m.get("responseContent").equals("null")){
-                    Object json = m.get("responseContent");
-                    if ((int)m.get("operateCode") == OPERATE_CODE[0]) {
-                        fillItem(Parse.parseThirdJson(json.toString()));
-                        callBack.showMessage(THIRD_MESSAGE[0]);
-                    }else{
-                        int position = (int) m.get("selectItem");
-                        data.remove(position);
-                        data.add(position, Parse.parseThirdJson(json.toString()).get(0));
-                        fullAdapter.updateSingleRow(gridView, position);
-                        if ((int)m.get("operateCode") == OPERATE_CODE[2]){
-                            editCount --;
-                            if (editCount != 0){return;}
-                            callBack.isUpdateFinish(false, THIRD_MESSAGE[2]);
-                        }else {
-                            callBack.showMessage(THIRD_MESSAGE[2]);
-                        }
+        int responseCode = (int)m.get("responseCode");
+        int operateCode = (int)m.get("operateCode");
+        Object json = m.get("responseContent");
 
-                    }
-                    return;
-                } else {
-                    callBack.showMessage(THIRD_MESSAGE[3]);
-                }
-            } else {
+        try {
+            if (responseCode != 200) {
                 callBack.showMessage(THIRD_MESSAGE[1]);
+                fillItem();
+                return;
             }
-        }catch (NullPointerException e){
+
+            if (json.equals("null")){
+                callBack.showMessage(THIRD_MESSAGE[4]);
+                fillItem();
+                return;
+            }
+
+            if (submitLayout.getVisibility() == View.GONE && selectMonth <= 0) {
+                submitLayout.setVisibility(View.VISIBLE);
+            }
+
+            if (operateCode == OPERATE_CODE[0]) {
+                List s = Parse.parseThirdJson(json.toString());
+                fillItem(s);
+                callBack.showMessage(THIRD_MESSAGE[0]);
+                return;
+            }
+
+            ThirdData positionData = (ThirdData)(Parse.parseThirdJson(json.toString()).get(0));
+            int position = (int) m.get("selectItem");
+            if (operateCode == OPERATE_CODE[1]){
+                ((ThirdData)dtData.get(position)).setState(positionData.getState());
+                callBack.showMessage(THIRD_MESSAGE[2]);
+            }else if (operateCode == OPERATE_CODE[2]){
+                ((ThirdData)dtData.get(position)).setContent(positionData.getContent());
+                callBack.showMessage(THIRD_MESSAGE[3]);
+            }
+            fullAdapter.updateSingleRow(gridView, position);
         }
-        fillItem();
+        catch (NullPointerException e){
+
+        }
     }
 
     public List createRequestParams(int operateCode, ThirdData d){
@@ -284,26 +307,8 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
             nextBtn.setEnabled(isSwitch);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        if (isButtonClick){return;}
-        ThirdData d = (ThirdData) data.get(clickPosition);
-        try {
-            if (d.getContent().equals(s.toString())) {
-                return;
-            }
-        }catch (NullPointerException e){
-            return;
-        }
-        editCount ++;
+    public void submitButton(int clickPosition){
+        ThirdData d = (ThirdData) dtData.get(clickPosition);
         List requestParams = createRequestParams(OPERATE_CODE[2], d);
         Map callBackParams = createCallBackParams(OPERATE_CODE[2], clickPosition);
         loadOrUpdateData(Network.THIRD_SET, handler, requestParams, callBackParams);
@@ -311,7 +316,7 @@ public class ThirdFragment extends mFragment implements View.OnClickListener, Te
 
     @Override
     public void onRefresh() {
-        clickPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
+        selectPosition = Date.getNowDayInMonth() + Date.getFirstDayInMonth() - 1;
         List requestParams = createRequestParams(OPERATE_CODE[0], null);
         Map callBackParams = createCallBackParams(OPERATE_CODE[0], -1);
         loadOrUpdateData(Network.THIRD_GET, handler, requestParams, callBackParams);

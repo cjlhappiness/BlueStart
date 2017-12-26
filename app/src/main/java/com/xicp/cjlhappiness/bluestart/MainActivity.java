@@ -55,10 +55,6 @@ public class MainActivity extends AppCompatActivity
 
     private float down;
 
-    private boolean isEdit = true;
-
-    private String tempMessage;
-
     private static final int THREAD_POOL = 5;
     private static final String[] MENU_TEXT = new String[]{"设  置", "检查更新", "退  出"};
     private static final String[] FRAME_TAG = new String[]{"First", "Second", "Third", "Fourth",
@@ -134,10 +130,6 @@ public class MainActivity extends AppCompatActivity
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!isEdit){
-            isEdit = true;
-            showMessage(tempMessage);
-            return;
         } else{
             if (backStackList.size() > 1){
                 int position = backStackList.get(backStackList.size() - 2);
@@ -313,13 +305,6 @@ public class MainActivity extends AppCompatActivity
             gifDrawable.stop();
         }
     }
-
-    @Override
-    public void isUpdateFinish(boolean isEdit, String message) {
-        this.isEdit = isEdit;
-        this.tempMessage = message;
-    }
-
 
     @Override
     public void showMessage(String message) {

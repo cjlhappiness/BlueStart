@@ -17,20 +17,28 @@ public class FirstAdapter extends mAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        if (view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.first_flag_item, null);
-            holder = new ViewHolder();
-            holder.img = (ImageView) view.findViewById(R.id.first_flag_item_image);
-            holder.time = (TextView) view.findViewById(R.id.first_flag_item_time);
-            holder.title = (TextView) view.findViewById(R.id.first_flag_item_title);
-            holder.content = (TextView) view.findViewById(R.id.first_flag_item_content);
-            view.setTag(holder);
+    public View getView(int i, View convertView, ViewGroup viewGroup) {
+        FirstHolder holder;
+        if (convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.first_flag_item, null);
+            holder = new FirstHolder();
+            holder.img = (ImageView) convertView.findViewById(R.id.first_flag_item_image);
+            holder.time = (TextView) convertView.findViewById(R.id.first_flag_item_time);
+            holder.title = (TextView) convertView.findViewById(R.id.first_flag_item_title);
+            holder.content = (TextView) convertView.findViewById(R.id.first_flag_item_content);
+            convertView.setTag(holder);
         }else{
-            holder = (ViewHolder) view.getTag();
+            holder = (FirstHolder) convertView.getTag();
         }
 
-        return view;
+        return convertView;
     }
+
+    class FirstHolder {
+        ImageView img;
+        TextView time;
+        TextView title;
+        TextView content;
+    }
+
 }
