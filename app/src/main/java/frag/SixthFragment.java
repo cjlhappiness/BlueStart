@@ -84,7 +84,6 @@ public class SixthFragment extends mFragment implements AdapterView.OnItemClickL
         fundamental = (TextView) view.findViewById(R.id.sixth_fundamental);
     }
 
-    @Override
     public void initGame() {
         randomNum = new int[]{0, 0, 0};
         itemDatas = new ArrayList();

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import frag.EighthFragment;
 import frag.FifthFragment;
 import frag.FirstFragment;
@@ -292,10 +291,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void isRequestBegin(int operateCode) {
-        if (operateCode == mFragment.OPERATE_CODE[0]) {
-            gifImageView.setVisibility(View.VISIBLE);
-            gifDrawable.start();
-        }
+        gifImageView.setVisibility(View.VISIBLE);
+        gifDrawable.start();
     }
 
     @Override

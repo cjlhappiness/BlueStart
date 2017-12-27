@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import data.FirstData;
+import data.FourthData;
 import data.SixthData;
 import data.ThirdData;
 import data.UserData;
@@ -49,6 +50,32 @@ public class Parse {
         return list;
     }
 
+    //解析时光轴数据
+    public static List parseFourthJson(String json){
+        List list = new ArrayList();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0 ; i < jsonArray.length() ; i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int id = jsonObject.getInt("id");
+                int userId = jsonObject.getInt("userId");
+                String content = jsonObject.getString("content");
+                String datetime = jsonObject.getString("datetime");
+                String[] datetimeArr = datetime.split("-| ");
+                int year = Integer.parseInt(datetimeArr[0]);
+                int month = Integer.parseInt(datetimeArr[1]);
+                int day = Integer.parseInt(datetimeArr[2]);
+                String time = datetimeArr[3];
+                FourthData data = new FourthData(id, userId, year, month, day, time, content);
+                list.add(data);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    //解析游戏数据
     public static SixthData parseSixthJson(String json){
         SixthData data = null;
         try {

@@ -12,10 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import data.ThirdData;
 import thread.mCallBack;
 import thread.mCallable;
 import thread.mFutureTask;
@@ -28,9 +24,7 @@ public class mFragment extends Fragment{
 
     public mCallBack callBack;
 
-    public final static int[] ID      = new int[]{0, 1};
     public final static int[] USER_ID = new int[]{950422};
-    public final static int[] OPERATE_CODE = new int[]{0x100};
 
     public Handler handler = new Handler(){
         @Override
@@ -65,10 +59,6 @@ public class mFragment extends Fragment{
     }
 
     public void initView(){
-
-    }
-
-    public void initGame(){
 
     }
 

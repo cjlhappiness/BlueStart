@@ -5,17 +5,23 @@ public class FourthData extends mData{
     private int year;
     private int month;
     private int day;
+    private String time;
     private String content;
 
     public FourthData(int id, int userId) {
         super(id, userId);
     }
 
-    public FourthData(int id, int userId, int year, int month, int day, String content) {
+    public FourthData(int id, int userId, String spare){
+        super(id, userId, spare);
+    }
+
+    public FourthData(int id, int userId, int year, int month, int day, String time,String content) {
         super(id, userId);
         this.year = year;
         this.month = month;
         this.day = day;
+        this.time = time;
         this.content = content;
     }
 
@@ -41,6 +47,14 @@ public class FourthData extends mData{
 
     public void getDay(int day) {
         this.day = day;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void getTime(String time) {
+        this.time = time;
     }
 
     public String getContent() {

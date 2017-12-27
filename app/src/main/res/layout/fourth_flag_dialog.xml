@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <EditText
+        android:id="@+id/fourth_dialog_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="2017-12-24 22:00\n"/>
@@ -12,12 +13,14 @@
         android:orientation="horizontal"
         android:gravity="right">
         <ImageView
+            android:id="@+id/fourth_dialog_cancel"
             android:layout_width="35dp"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:src="@mipmap/fourth_cloud_cancel"
             android:layout_marginRight="10dp"/>
         <ImageView
+            android:id="@+id/fourth_dialog_confirm"
             android:layout_width="35dp"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
