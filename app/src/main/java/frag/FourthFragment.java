@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
 
     public void initView(){
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fourth_swipe);
+        swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) view.findViewById(R.id.fourth_list);
         imageBtn = (ImageButton) view.findViewById(R.id.fourth_add);
         imageBtn.setOnClickListener(this);
@@ -122,7 +124,6 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
     public void parseData(Map m) {
         super.parseData(m);
         swipeRefreshLayout.setRefreshing(false);
-        callBack.isRequestFinish();
         int operateCode = (int)m.get("operateCode");
         try {
             if ((int)m.get("responseCode") == 200){
@@ -170,8 +171,8 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
         params.add(s2);
 
         if (operateCode == OPERATE_CODE[1]) {
-            content = d.getContent().split("\n", 1)[1];
-            datetime = d.getContent().split("\n", 1)[0];
+            content = d.getSpare().split("\n", 2)[1];
+            datetime = d.getSpare().split("\n", 2)[0];
         }else if (operateCode == OPERATE_CODE[3]){
             content = d.getContent();
             datetime = String.format("%d-%d-%d %s", d.getYear(), d.getMonth(), d.getDay(), d.getTime());

@@ -216,7 +216,6 @@ public class ThirdFragment extends mFragment implements View.OnClickListener,
     @Override
     public void parseData(Map m) {
         super.parseData(m);
-
         swipeRefreshLayout.setRefreshing(false);
         switchButtonEnabled(true);
         int responseCode = (int)m.get("responseCode");

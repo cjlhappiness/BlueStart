@@ -231,7 +231,6 @@ public class SixthFragment extends mFragment implements AdapterView.OnItemClickL
     public void parseData(Map m) {
         super.parseData(m);
         swipeRefreshLayout.setRefreshing(false);
-        callBack.isRequestFinish();
         try {
             if ((int)m.get("responseCode") == 200 && !m.get("responseContent").equals("null")){
                 startBtn.setEnabled(true);
