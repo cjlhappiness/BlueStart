@@ -7,16 +7,17 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.xicp.cjlhappiness.bluestart.R;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +25,13 @@ import java.util.List;
 import java.util.Map;
 import adapter.FourthAdapter;
 import data.FourthData;
+import util.Date;
 import util.Network;
 import util.Parse;
 
 //第4个Fragment
 public class FourthFragment extends mFragment implements View.OnClickListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener, View.OnTouchListener{
 
     private View view;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -64,6 +66,7 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fourth_swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) view.findViewById(R.id.fourth_list);
+        listView.setOnTouchListener(this);
         imageBtn = (ImageButton) view.findViewById(R.id.fourth_add);
         imageBtn.setOnClickListener(this);
     }
@@ -75,7 +78,11 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
         onRefresh();
     }
 
-    private void refreshItem(){
+    private void refreshItem(List data){
+        if (itemDatas.size() != 0){
+            itemDatas.clear();
+        }
+        itemDatas.addAll(data);
         adapter.notifyDataSetChanged();
     }
 
@@ -92,7 +99,10 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
         window.setAttributes(lp);
         ImageView dialogCancel = (ImageView) dialogLayout.findViewById(R.id.fourth_dialog_cancel);
         ImageView dialogCancelConfirm = (ImageView) dialogLayout.findViewById(R.id.fourth_dialog_confirm);
-        final EditText dialogEdit = (EditText) dialogLayout.findViewById(R.id.fourth_dialog_edit);
+        EditText dialogEdit = (EditText) dialogLayout.findViewById(R.id.fourth_dialog_edit);
+        dialogEdit.setText(Date.getDatetime() + "\n");
+        dialogEdit.setSelection(dialogEdit.getText().length());
+        final EditText dialogEditTemp = dialogEdit;
         dialogCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +112,7 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
         dialogCancelConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FourthData fourthData = new FourthData(0, 950125, dialogEdit.getText().toString());
+                FourthData fourthData = new FourthData(0, 950125, dialogEditTemp.getText().toString());
                 List requestParams = createRequestParams(OPERATE_CODE[1], fourthData);
                 Map callBackParams = createCallBackParams(OPERATE_CODE[1]);
                 loadOrUpdateData(Network.FOURTH_SET, handler, requestParams, callBackParams);
@@ -129,7 +139,9 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
             if ((int)m.get("responseCode") == 200){
                 if (!m.get("responseContent").equals("null")) {
                     Object json = m.get("responseContent");
-                    itemDatas = Parse.parseFourthJson(json.toString());
+                    List data = Parse.parseFourthJson(json.toString());
+                    dataSort(data);
+                    refreshItem(data);
                     if (operateCode == OPERATE_CODE[0]) {
                         callBack.showMessage(FOURTH_MESSAGE[0]);
                     } else if (operateCode == OPERATE_CODE[1]) {
@@ -142,7 +154,6 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
                 }else {
                     callBack.showMessage(FOURTH_MESSAGE[4]);
                 }
-                refreshItem();
             }else {
                 callBack.showMessage(FOURTH_MESSAGE[5]);
             }
@@ -197,4 +208,36 @@ public class FourthFragment extends mFragment implements View.OnClickListener,
     public void onRefresh() {
         loadOrUpdateData(Network.FOURTH_GET, handler, null, createCallBackParams(OPERATE_CODE[0]));
     }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        try {
+            if (listView.getFirstVisiblePosition() == 0 && listView.getChildAt(0).getTop() == 0){
+                swipeRefreshLayout.setEnabled(true);
+            }else {
+                swipeRefreshLayout.setEnabled(false);
+            }
+        }catch (NullPointerException e){
+            swipeRefreshLayout.setEnabled(true);
+        }
+        return false;
+    }
+
+    private void dataSort(List data){
+        for (int i = 0; i < data.size(); i++){
+            FourthData f1 = (FourthData)data.get(i);
+            int dt1 = f1.getYear() * 10000 + f1.getMonth() * 100 + f1.getDay();
+            for (int j = i + 1; j < data.size(); j++){
+                FourthData f2 = (FourthData)data.get(j);
+                int dt2 = f2.getYear() * 10000 + f2.getMonth() * 100 + f2.getDay();
+                if (dt1 < dt2){
+                    data.remove(f1);
+                    data.add(i, f2);
+                    data.remove(f2);
+                    data.add(j, f1);
+                }
+            }
+        }
+    }
+
 }

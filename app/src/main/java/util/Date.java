@@ -4,7 +4,6 @@ package util;
 日期时间工具类
 */
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,11 +164,11 @@ public class Date {
         return count;
     }
 
-    public static String getDateTime(){
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateTime = format.format(date);
-        return dateTime;
+    public static String getDatetime(){
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datetime = format.format(date);
+        return datetime;
     }
 
     //实例化一个日历对象

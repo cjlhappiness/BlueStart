@@ -59,13 +59,13 @@ public class Parse {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 int id = jsonObject.getInt("id");
                 int userId = jsonObject.getInt("userId");
-                String content = jsonObject.getString("content");
                 String datetime = jsonObject.getString("datetime");
                 String[] datetimeArr = datetime.split("-| ");
-                int year = Integer.parseInt(datetimeArr[0]);
+                int year = Integer.parseInt(datetimeArr[0].substring(2));
                 int month = Integer.parseInt(datetimeArr[1]);
                 int day = Integer.parseInt(datetimeArr[2]);
                 String time = datetimeArr[3];
+                String content = time + "\n" + jsonObject.getString("content");
                 FourthData data = new FourthData(id, userId, year, month, day, time, content);
                 list.add(data);
             }
